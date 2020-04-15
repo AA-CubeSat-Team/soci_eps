@@ -1,0 +1,1 @@
+"./hello.obj" "./i2c.obj" "../lnk_msp430f5529.cmd" -llibmath.a -llibc.a 
