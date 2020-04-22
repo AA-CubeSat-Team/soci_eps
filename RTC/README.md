@@ -8,6 +8,9 @@ The DS1307 was selected for several reasons:
 # Usage
 
 Using I2C, the time first must be programmed into the chip, and counting must be enabled. After this point, the chip will keep track of time indefinitely, as long as it continues to receive power.
+
 The device uses I2C address 0x68. The time is stored in an array of onboard RAM, starting with seconds, at address 0x00. Minutes are stored at 0x01, hours are stored at 0x02, day of the week (i.e., Sunday – Saturday) is stored at 0x03, day of the month is stored at 0x04, month is stored at 0x05, year at 0x06, and 0x07 is used as a control register. Data is stored as a binary coded decimal.
+
 For example, if setting the day of the month to be 27, a user should program 0x27 to address 0x04 of the chip’s RAM.
+
 Reading the time from the chip is done via I2C and works the same way as writing.
