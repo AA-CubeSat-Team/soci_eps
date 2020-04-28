@@ -1,3 +1,4 @@
 [submodule "power_sim/soci-gnc"]
 	path = power_sim/soci-gnc
 	url = git@github.com:AA-CubeSat-Team/soci-gnc.git
+	branch = dev_cole
