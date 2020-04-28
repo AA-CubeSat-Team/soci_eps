@@ -114,3 +114,16 @@ Release/
 .xdchelp
 .config/
 .launches/
+
+# Simulink
+*.slxc
+*.slx.r2016a
+*.slx.autosave
+
+# Matlab
+*.m~
+*.mat
+*.l
+
+# Other
+*.xml
