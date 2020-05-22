@@ -1,3 +1,5 @@
+The EPS team developed a real-time clock circuit (RTC) to be included on the OBC, providing accurate information about time elapsed even when the battery is disconnected from the satellite. The RTC uses Maxim Integregated’s DS1307 integrated chip and a CR-2032 battery.
+
 # DS1307
 
 The DS1307 is a low power, serial real-time clock. It sources power both from a VCC pin, and an external coin cell battery. Time is programmed/read via I2C. Time is kept by the chip, using an external 32.768 kHz crystal.
