@@ -36,9 +36,9 @@ cellsX = 4;
 cellsY = 5;
 cellsZ = 2;
 
-VmppX = cellsX * VmppCell; % V
-VmppY = cellsY * VmppCell; % V
-VmppZ = cellsZ * VmppCell; % V
+VmppX = cellsX * VmppCell; % V, +x face
+VmppY = cellsY * VmppCell; % V, -x, +y, -y faces
+VmppZ = cellsZ * VmppCell; % V, +z face
 
 solar_panels.maxPower = (Impp) .* [ VmppX; VmppY; VmppY; VmppY; VmppZ; 0.0 ];
 
@@ -70,16 +70,16 @@ test_data.EPS = 200;
 test_data.COM_TX = 2900;
 test_data.COM_RX = 450;
 
-test_data.RXW_Pointing = 2000;
-test_data.RXW_Idle = 660;
+test_data.RXW_Pointing = 2000; %% not used
+test_data.RXW_Idle = 660; %% not used
 
 test_data.MTQ_Idle = 0;
-test_data.MTQ_Active = 4320;
+test_data.MTQ_Active = 4*1080 + 595;
 
-test_data.IMG_Idle = 0;
-test_data.IMG_Active = 550;
+test_data.IMG_Idle = 25;
+test_data.IMG_Active = 515;
 
 test_data.CDH_Idle = 398;
 test_data.CDH_Active = 398;
 
-test_data.SEN_AVG = 1000 * 3.3 * (0.023 + 3*0.0001 + 3*0.0027);
+test_data.SEN_AVG = 3.3 * (23 + 3*0.11 + 3*2.7);
