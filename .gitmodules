@@ -2,3 +2,6 @@
 	path = power_sim/soci-gnc
 	url = git@github.com:AA-CubeSat-Team/soci-gnc.git
 	branch = dev_cole
+[submodule "flight_software/soci_cdh_drivers"]
+	path = flight_software/soci_cdh_drivers
+	url = https://github.com/AA-CubeSat-Team/soci_cdh_drivers
