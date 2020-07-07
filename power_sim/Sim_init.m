@@ -57,6 +57,11 @@ clear cellsX cellsY cellsZ VmppX VmppY VmppZ
 clear solar_panels
 
 %% test
+% simParams.sample_time_s = .1;
+% simParams.sensors.sample_time_s = 1;
+% simParams.sensors.actuators = 1;
+% simParams.sensors.magField = 1;
+
 
 test_data = struct;
 
