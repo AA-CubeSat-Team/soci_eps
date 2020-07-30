@@ -1,3 +1,4 @@
+#pragma once
 #include <stdint.h>
 
 #include "soci_cdh_drivers\cdh_i2c_driver\drivers\fsl_common.h"
@@ -50,5 +51,15 @@ instance works as slave) or board to board communication. Default is single boar
 #define I2C_EPS_CMD_TELEMETRY 0x10
 
 // breaking apart 0xE308 into two bytes, 0x3E and 0x08. Might be a better way to do this.
-#define I2C_EPS_TELE_TEMPERATURE_MOTHERBOARD_0 0xE3
+// the first 2 bit of TLE code 
+#define I2C_EPS_TELE_E3_0 0xE3
+#define I2C_EPS_TELE_E2_0 0xE2
+
+//For the E3 methods
 #define I2C_EPS_TELE_TEMPERATURE_MOTHERBOARD_1 0x08
+
+//For the E2 methods
+#define I2C_EPS_TELE_BATTERY_OUTPUT_VOLTAGE_1 0x80
+#define I2C_EPS_TELE_BCR_OUTPUT_CURRENT_1 0x84
+#define I2C_EPS_TELE_BCR_OUTPUT_VOLTAGE_1 0x80
+//#define I2C_EPS_TELE_3V3_CURRENT_DRAW_1 
