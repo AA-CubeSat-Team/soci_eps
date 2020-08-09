@@ -58,6 +58,10 @@ int main(void)
     float eps_outputCurrentOf3V3Bus;
     float eps_outputVoltageOf3V3Bus;
 
+    // added 8/8
+    float eps_outputVoltageSwitch;
+    float eps_outputCurrentSwitch;
+
     eps_temperature = i2c_eps_temperature();
     eps_bcrOutputCurrent = i2c_eps_bcrOutputCurrent();
     eps_bcrOutputVoltage = i2c_eps_bcrOutputVoltage();
@@ -72,7 +76,6 @@ int main(void)
     eps_outputCurrentOf3V3Bus = i2c_eps_outputCurrentOf3V3Bus();
     eps_outputVoltageOf3V3Bus = i2c_eps_outputVoltageOf3V3Bus();
 
-
     printf("EPS temperature is: %f\n", eps_temperature);
     printf("EPS BCR output current is: %f\n", eps_bcrOutputCurrent);
     printf("EPS BCR output voltage is: %f\n", eps_bcrOutputVoltage);
@@ -86,6 +89,20 @@ int main(void)
     printf("VPCM5V is: %f\n", eps_outputVoltageOf5VBus);
     printf("IPCM3V3 is: %f\n", eps_outputCurrentOf3V3Bus);
     printf("VPCM3V3 is: %f\n", eps_outputVoltageOf3V3Bus);
+
+
+    // added 8/8
+   // i is selecting which switch user is looking at
+   // FOR TESTING PURPOSE
+    for (int i = 1; i < 11; i++) {
+        eps_outputVoltageSwitch = i2c_eps_outputVoltageSwitch(i);
+        printf("VSW%d is: %f\n", i, eps_temperature);
+
+        eps_outputCurrentSwitch = i2c_eps_outputCurrentSwitch(i);
+        printf("ISW%d temperature is: %f\n", i, eps_temperature);
+
+    }
+
 
 
     // batteries telemetry
@@ -348,7 +365,123 @@ float i2c_eps_outputVoltageOf3V3Bus()
     return output;
 }
 
+// added 8/8__________________________________________________________________________________________________
+uint32_t i2c_eps_voltageSwitchSel(int num) {
+    if (num == 1) {
+        return I2C_EPS_TELE_OUTPUT_VOLTAGE_SWITCH_1_1;
+    }
+    else if (num == 2) {
+        return I2C_EPS_TELE_OUTPUT_VOLTAGE_SWITCH_2_1;
+    }
+    else if (num == 3) {
+        return I2C_EPS_TELE_OUTPUT_VOLTAGE_SWITCH_3_1;
+    }
+    else if (num == 4) {
+        return I2C_EPS_TELE_OUTPUT_VOLTAGE_SWITCH_4_1;
+    }
+    else if (num == 5) {
+        return I2C_EPS_TELE_OUTPUT_VOLTAGE_SWITCH_5_1;
+    }
+    else if (num == 6) {
+        return I2C_EPS_TELE_OUTPUT_VOLTAGE_SWITCH_6_1;
+    }
+    else if (num == 7) {
+        return I2C_EPS_TELE_OUTPUT_VOLTAGE_SWITCH_7_1;
+    }
+    else if (num == 8) {
+        return I2C_EPS_TELE_OUTPUT_VOLTAGE_SWITCH_8_1;
+    }
+    else if (num == 9) {
+        return I2C_EPS_TELE_OUTPUT_VOLTAGE_SWITCH_9_1;
+    }
+    else if (num == 10) {
+        return I2C_EPS_TELE_OUTPUT_VOLTAGE_SWITCH_10_1;
+    }
+}
 
+uint32_t i2c_eps_currentSwitchSel(int num) {
+    if (num == 1) {
+        return I2C_EPS_TELE_OUTPUT_CURRENT_SWITCH_1_1;
+    }
+    else if (num == 2) {
+        return I2C_EPS_TELE_OUTPUT_CURRENT_SWITCH_2_1;
+    }
+    else if (num == 3) {
+        return I2C_EPS_TELE_OUTPUT_CURRENT_SWITCH_3_1;
+    }
+    else if (num == 4) {
+        return I2C_EPS_TELE_OUTPUT_CURRENT_SWITCH_4_1;
+    }
+    else if (num == 5) {
+        return I2C_EPS_TELE_OUTPUT_CURRENT_SWITCH_5_1;
+    }
+    else if (num == 6) {
+        return I2C_EPS_TELE_OUTPUT_CURRENT_SWITCH_6_1;
+    }
+    else if (num == 7) {
+        return I2C_EPS_TELE_OUTPUT_CURRENT_SWITCH_7_1;
+    }
+    else if (num == 8) {
+        return I2C_EPS_TELE_OUTPUT_CURRENT_SWITCH_8_1;
+    }
+    else if (num == 9) {
+        return I2C_EPS_TELE_OUTPUT_CURRENT_SWITCH_9_1;
+    }
+    else if (num == 10) {
+        return I2C_EPS_TELE_OUTPUT_CURRENT_SWITCH_10_1;
+    }
+}
+
+float i2c_eps_outputVoltageSwitch(int num)
+{
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_TELEMETRY; // i2c command = get EPS telemetry
+    g_master_buff[2] = I2C_EPS_TELE_E4_0; // telemetry = motherboard battery, first byte
+    g_master_buff[3] = i2c_eps_voltageSwitchSel(num); // telemetry = motherboard battery, second byte
+
+    i2c_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[2], g_master_buff[3], 5000);
+
+    float output = 0;
+    if (num <= 2) {
+        output = 0.01349 * adc_count;
+    }
+    else if ((num > 2) && (num <= 4)) {
+        output = 0.008993 * adc_count;
+    }
+    else if ((num > 4) && (num <= 7)) {
+        output = 0.005865 * adc_count;
+    }
+    else {
+        output = 0.004311 * adc_count;
+    }
+
+    return output;
+}
+
+float i2c_eps_outputCurrentSwitch(int num)
+{
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_TELEMETRY; // i2c command = get EPS telemetry
+    g_master_buff[2] = I2C_EPS_TELE_E4_0; // telemetry = motherboard battery, first byte
+    g_master_buff[3] = i2c_eps_currentSwitchSel(num); // telemetry = motherboard battery, second byte
+
+    i2c_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[2], g_master_buff[3], 5000);
+
+    float output = 0;
+    if (num <= 2) {
+        output = 0.001328 * adc_count;
+    }
+    else if ((num > 2) && (num <= 4)) {
+        output = 0.006239 * adc_count;
+    }
+    else {
+        output = 0.001328 * adc_count;
+    }
+
+    return output;
+}
 
 
 // batteries telemetry
