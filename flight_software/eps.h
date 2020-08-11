@@ -52,13 +52,13 @@ instance works as slave) or board to board communication. Default is single boar
 
 // breaking apart 0xE308 into two bytes, 0x3E and 0x08. Might be a better way to do this.
 // the first 2 bit of TLE code 
+#define I2C_EPS_TELE_E1_0 0xE1
 #define I2C_EPS_TELE_E3_0 0xE3
 #define I2C_EPS_TELE_E2_0 0xE2
 #define I2C_EPS_TELE_E4_0 0xE4
 
-//For the E3 methods
-#define I2C_EPS_TELE_TEMPERATURE_MOTHERBOARD_1 0x08
 
+// going in order of the telemetry eps sheet
 //For the E2 methods
 #define I2C_EPS_TELE_BATTERY_OUTPUT_VOLTAGE_1 0x80
 #define I2C_EPS_TELE_BCR_OUTPUT_CURRENT_1 0x84
@@ -75,6 +75,7 @@ instance works as slave) or board to board communication. Default is single boar
 #define I2C_EPS_TELE_OUTPUT_VOLTAGE_OF_3V3_BUS_1 0x00
 
 // added 8/8
+// Voltage/Current for Switches 1-10
 #define I2C_EPS_TELE_OUTPUT_VOLTAGE_SWITCH_1_1 0x10
 #define I2C_EPS_TELE_OUTPUT_CURRENT_SWITCH_1_1 0x14
 #define I2C_EPS_TELE_OUTPUT_VOLTAGE_SWITCH_2_1 0x20
@@ -95,3 +96,55 @@ instance works as slave) or board to board communication. Default is single boar
 #define I2C_EPS_TELE_OUTPUT_CURRENT_SWITCH_9_1 0x94
 #define I2C_EPS_TELE_OUTPUT_VOLTAGE_SWITCH_10_1 0xA0
 #define I2C_EPS_TELE_OUTPUT_CURRENT_SWITCH_10_1 0xA4
+
+//For the E3 methods
+#define I2C_EPS_TELE_TEMPERATURE_MOTHERBOARD_1 0x08
+
+// added 8/11
+// Table 11-9
+#define I2C_EPS_TELE_VOLTAGE_FEEDING_BCR1_1 0x10
+#define I2C_EPS_TELE_CURRENT_BCR1_CONNECTOR_SA1A_1 0x14
+#define I2C_EPS_TELE_CURRENT_BCR1_CONNECTOR_SA1B_1 0x15
+#define I2C_EPS_TELE_ARRAY_TEMP_CONNECTOR_SA1A_1 0x18
+#define I2C_EPS_TELE_ARRAY_TEMP_CONNECTOR_SA1B_1 0x19
+#define I2C_EPS_TELE_SUN_DETECTOR_CONNECTOR_SA1A_1 0x1C
+#define I2C_EPS_TELE_SUN_DETECTOR_CONNECTOR_SA1B_1 0x1D
+
+#define I2C_EPS_TELE_VOLTAGE_FEEDING_BCR2_1 0x20
+#define I2C_EPS_TELE_CURRENT_BCR2_CONNECTOR_SA2A_1 0x24
+#define I2C_EPS_TELE_CURRENT_BCR2_CONNECTOR_SA2B_1 0x25
+#define I2C_EPS_TELE_ARRAY_TEMP_CONNECTOR_SA2A_1 0x28
+#define I2C_EPS_TELE_ARRAY_TEMP_CONNECTOR_SA2B_1 0x29
+#define I2C_EPS_TELE_SUN_DETECTOR_CONNECTOR_SA2A_1 0x2C
+#define I2C_EPS_TELE_SUN_DETECTOR_CONNECTOR_SA2B_1 0x2D
+
+#define I2C_EPS_TELE_VOLTAGE_FEEDING_BCR3_1 0x30
+#define I2C_EPS_TELE_CURRENT_BCR3_CONNECTOR_SA3A_1 0x34
+#define I2C_EPS_TELE_CURRENT_BCR3_CONNECTOR_SA3B_1 0x35
+#define I2C_EPS_TELE_ARRAY_TEMP_CONNECTOR_SA3A_1 0x38
+#define I2C_EPS_TELE_ARRAY_TEMP_CONNECTOR_SA3B_1 0x39
+#define I2C_EPS_TELE_SUN_DETECTOR_CONNECTOR_SA3A_1 0x3C
+#define I2C_EPS_TELE_SUN_DETECTOR_CONNECTOR_SA3B_1 0x3D
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

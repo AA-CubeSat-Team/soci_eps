@@ -62,6 +62,12 @@ int main(void)
     float eps_outputVoltageSwitch;
     float eps_outputCurrentSwitch;
 
+    // added 8/11
+    float eps_voltageFeedingBcr;
+    float eps_currentBcrConnectorSA;
+    float eps_arrayTempConnectorSA;
+    float eps_sunDetectorConnectorSA;
+
     eps_temperature = i2c_eps_temperature();
     eps_bcrOutputCurrent = i2c_eps_bcrOutputCurrent();
     eps_bcrOutputVoltage = i2c_eps_bcrOutputVoltage();
@@ -96,14 +102,44 @@ int main(void)
    // FOR TESTING PURPOSE
     for (int i = 1; i < 11; i++) {
         eps_outputVoltageSwitch = i2c_eps_outputVoltageSwitch(i);
-        printf("VSW%d is: %f\n", i, eps_temperature);
+        printf("VSW%d is: %f\n", i, eps_outputVoltageSwitch);
 
         eps_outputCurrentSwitch = i2c_eps_outputCurrentSwitch(i);
-        printf("ISW%d temperature is: %f\n", i, eps_temperature);
+        printf("ISW%d temperature is: %f\n", i, eps_outputCurrentSwitch);
 
     }
 
+    // added 8/11
+    // SAnum goes 1-3
+    // SAletter: A = 1, B = 2
 
+    for (int i = 1; i <= 3; i++) {
+        eps_voltageFeedingBcr = i2c_eps_voltageFeedingBcr(i);
+        printf("VBCR%d is: %f\n", i, eps_voltageFeedingBcr);
+
+        for (int j = 1; j <= 2, j++) {
+            if (j == 1) {
+                eps_currentBcrConnectorSA = i2c_eps_currentBcrConnectorSA(j, i);
+                printf("IBCR%dA is: %f\n", i, eps_currentBcrConnectorSA);
+
+                eps_arrayTempConnectorSA = i2c_eps_arrayTempConnectorSA(j, i);
+                printf("TBCR%dA is: %f\n", i, eps_arrayTempConnectorSA);
+
+                eps_sunDetectorConnectorSA = i2c_eps_sunDetectorConnectorSA(j, i);
+                printf("SDBCR%dA is: %f\n", i, eps_sunDetectorConnectorSA);
+            }
+            else {
+                eps_currentBcrConnectorSA = i2c_eps_currentBcrConnectorSA(j, i);
+                printf("IBCR%dB is: %f\n", i, eps_currentBcrConnectorSA);
+
+                eps_arrayTempConnectorSA = i2c_eps_arrayTempConnectorSA(j, i);
+                printf("TBCR%dB is: %f\n", i, eps_arrayTempConnectorSA);
+
+                eps_sunDetectorConnectorSA = i2c_eps_sunDetectorConnectorSA(j, i);
+                printf("SDBCR%dB is: %f\n", i, eps_sunDetectorConnectorSA);
+            }
+        }
+    }
 
     // batteries telemetry
     float eps_batteryOutputVoltage;
@@ -482,6 +518,173 @@ float i2c_eps_outputCurrentSwitch(int num)
 
     return output;
 }
+
+// added 8/11________________________________________________________________________________________________
+// only use table 11-10
+uint32_t i2c_eps_voltageFeedingBcrSel(int num) {
+    if (num == 1) {
+        return I2C_EPS_TELE_VOLTAGE_FEEDING_BCR1_1;
+    }
+    else if (num == 2) {
+        return I2C_EPS_TELE_VOLTAGE_FEEDING_BCR2_1;
+    }
+    else if (num == 3) {
+        return I2C_EPS_TELE_VOLTAGE_FEEDING_BCR3_1;
+    }
+}
+
+float i2c_eps_voltageFeedingBcr(int num)
+{
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_TELEMETRY; // i2c command = get EPS telemetry
+    g_master_buff[2] = I2C_EPS_TELE_E1_0; // telemetry = motherboard battery, first byte
+    g_master_buff[3] = i2c_eps_voltageFeedingBcrSel(num); // telemetry = motherboard battery, second byte
+
+    i2c_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[2], g_master_buff[3], 5000);
+
+    float output = 0;
+    // for Voltage BCR3
+    if (num == 3) {
+        output = 0.0099706 * adc_count;
+    }
+    else {
+        output = 0.0322581 * adc_count;
+    }
+    return output;
+}
+
+uint32_t i2c_eps_currentBcrConnectorSaaSel(int num) {
+    if (num == 1) {
+        return I2C_EPS_TELE_CURRENT_BCR1_CONNECTOR_SA1A_1;
+    }
+    else if (num == 2) {
+        return I2C_EPS_TELE_CURRENT_BCR2_CONNECTOR_SA2A_1;
+    }
+    else if (num == 3) {
+        return I2C_EPS_TELE_CURRENT_BCR3_CONNECTOR_SA3A_1;
+    }
+}
+
+uint32_t i2c_eps_currentBcrConnectorSabSel(int num) {
+    if (num == 1) {
+        return I2C_EPS_TELE_CURRENT_BCR1_CONNECTOR_SA1B_1;
+    }
+    else if (num == 2) {
+        return I2C_EPS_TELE_CURRENT_BCR2_CONNECTOR_SA2B_1;
+    }
+    else if (num == 3) {
+        return I2C_EPS_TELE_CURRENT_BCR3_CONNECTOR_SA3B_1;
+    }
+}
+
+
+float i2c_eps_currentBcrConnectorSA(int SAnum, int SAletter)
+{
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_TELEMETRY; // i2c command = get EPS telemetry
+    g_master_buff[2] = I2C_EPS_TELE_E1_0; // telemetry = motherboard battery, first byte
+    if (SAletter == 1) {
+        g_master_buff[3] = i2c_eps_currentBcrConnectorSaaSel(SAnum); // telemetry = motherboard battery, second byte
+    }
+    else if (SAletter == 2) {
+        g_master_buff[3] = i2c_eps_currentBcrConnectorSabSel(SAnum); // telemetry = motherboard battery, second byte
+    }
+
+    i2c_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[2], g_master_buff[3], 5000);
+
+    float output = 0.0009775 * adc_count;
+    return output;
+}
+
+
+uint32_t i2c_eps_arrayTempConnectorSaaSel(int num) {
+    if (num == 1) {
+        return I2C_EPS_TELE_ARRAY_TEMP_CONNECTOR_SA1A_1;
+    }
+    else if (num == 2) {
+        return I2C_EPS_TELE_ARRAY_TEMP_CONNECTOR_SA2A_1;
+    }
+    else if (num == 3) {
+        return I2C_EPS_TELE_ARRAY_TEMP_CONNECTOR_SA3A_1;
+    }
+}
+
+uint32_t i2c_eps_arrayTempConnectorSabSel(int num) {
+    if (num == 1) {
+        return I2C_EPS_TELE_ARRAY_TEMP_CONNECTOR_SA1B_1;
+    }
+    else if (num == 2) {
+        return I2C_EPS_TELE_ARRAY_TEMP_CONNECTOR_SA2B_1;
+    }
+    else if (num == 3) {
+        return I2C_EPS_TELE_ARRAY_TEMP_CONNECTOR_SA3B_1;
+    }
+}
+
+float i2c_eps_arrayTempConnectorSA(int SAnum, int SAletter)
+{
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_TELEMETRY; // i2c command = get EPS telemetry
+    g_master_buff[2] = I2C_EPS_TELE_E1_0; // telemetry = motherboard battery, first byte
+    if (SAletter == 1) {
+        g_master_buff[3] = i2c_eps_arrayTempConnectorSaaSel(SAnum); // telemetry = motherboard battery, second byte
+    }
+    else if (SAletter == 2) {
+        g_master_buff[3] = i2c_eps_arrayTempConnectorSabSel(SAnum); // telemetry = motherboard battery, second byte
+    }
+
+    i2c_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[2], g_master_buff[3], 5000);
+
+    float output = (0.4963 * adc_count) - 273.15;
+    return output;
+}
+
+uint32_t i2c_eps_sunDetectorConnectorSaaSel(int num) {
+    if (num == 1) {
+        return I2C_EPS_TELE_SUN_DETECTOR_CONNECTOR_SA1A_1;
+    }
+    else if (num == 2) {
+        return I2C_EPS_TELE_SUN_DETECTOR_CONNECTOR_SA2A_1;
+    }
+    else if (num == 3) {
+        return I2C_EPS_TELE_SUN_DETECTOR_CONNECTOR_SA3A_1;
+    }
+}
+
+uint32_t i2c_eps_sunDetectorConnectorSabSel(int num) {
+    if (num == 1) {
+        return I2C_EPS_TELE_SUN_DETECTOR_CONNECTOR_SA1B_1;
+    }
+    else if (num == 2) {
+        return I2C_EPS_TELE_SUN_DETECTOR_CONNECTOR_SA2B_1;
+    }
+    else if (num == 3) {
+        return I2C_EPS_TELE_SUN_DETECTOR_CONNECTOR_SA3B_1;
+    }
+}
+
+float i2c_eps_sunDetectorConnectorSA(int SAnum, int SAletter)
+{
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_TELEMETRY; // i2c command = get EPS telemetry
+    g_master_buff[2] = I2C_EPS_TELE_E1_0; // telemetry = motherboard battery, first byte
+    if (SAletter == 1) {
+        g_master_buff[3] = i2c_eps_sunDetectorConnectorSaaSel(SAnum); // telemetry = motherboard battery, second byte
+    }
+    else if (SAletter == 2) {
+        g_master_buff[3] = i2c_eps_sunDetectorConnectorSabSel(SAnum); // telemetry = motherboard battery, second byte
+    }
+
+    i2c_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[2], g_master_buff[3], 5000);
+
+    float output = 1.59725 * adc_count;
+    return output;
+}
+
 
 
 // batteries telemetry
