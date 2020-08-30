@@ -686,6 +686,104 @@ float i2c_eps_sunDetectorConnectorSA(int SAnum, int SAletter)
 }
 
 
+// attempt Board Status_____________________________________________________________________________________
+//added 8/30
+// checks if any of the 0-6 bits is true
+bool i2c_eps_boardStatus() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_BOARD_STATUS; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 1000);
+
+    // make it a boolean to check if any bit is untrue
+    bool = false;
+    uint32_t temp = data;
+    while (temp) {
+        if (temp & 1) {
+            bool = true;
+        }
+        temp >>= 1;
+    }
+    return bool;
+}
+
+uint32_t i2c_eps_GetLastError() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_LAST_ERROR; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 1000);
+    return data;
+}
+
+uint32_t i2c_eps_getVersion() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_VERSION; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 1000);
+    return data;
+}
+
+uint32_t i2c_eps_getChecksum() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_CHECKSUM; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 35000);
+    return data;
+}
+
+uint32_t i2c_eps_getRevision() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_REVISION; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 1000);
+    return data;
+}
+
+
+uint32_t i2c_command_read_write_helper(gmb_0, gmb_1, gmb_3, d1) {
+    printf("Master will send data :");
+    print_i2c_data(g_master_buff);
+
+    // i2c write
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, gmb_0, datasize);
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, gmb_1, datasize);
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, gmb_2, datasize);
+
+    delay(d1);
+
+    //i2c read
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Read, I2C_EPS_REG_ADDR, g_slave_buff, datasize);
+
+    delay(d1);
+
+    printf("Master received data from slave: ");
+    print_i2c_data(g_slave_buff);
+
+    uint32_t adc_count = 0;
+    /* get the ADC count returned using bitwise operations
+     * adc_count will be a 32-bit int of the form:
+     * {0x00     0x00     g_slave_buff[1]     g_slave_buff[0]}
+     */
+    adc_count = (g_slave_buff[3] << 23) | (g_slave_buff[2] << 15) | (g_slave_buff[1] << 7) | (g_slave_buff[0]); 
+
+    return adc_count;
+}
+
 
 // batteries telemetry
 //___________________________________________________________________________________________________________
