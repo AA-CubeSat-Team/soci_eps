@@ -755,6 +755,66 @@ uint32_t i2c_eps_getRevision() {
 }
 
 
+// added 9/3_________________________________________________________________________________________________
+
+
+uint32_t i2c_eps_GetComWatchdogPeriod() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_COM_WATCHDOG_PER; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 1000);
+    return data;
+}
+
+// not quite sure what is going on for this method
+void i2c_eps_SetComWatchdogPeriod() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_SET_COM_WATCHDOG_PER; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // needs period 
+    //suggestion
+    //g_master_buff[3] = Period //also add a period parameter???
+
+}
+
+// check
+void i2c_eps_resetComWatchdog() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_RESET_COM_WATCHDOG; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+
+    delay(1000);
+}
+
+uint32_t i2c_eps_getNumOfBrownoutResets() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_NUM_BROWN_OUT_RESET; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 1000);
+    return data;
+}
+
+uint32_t i2c_eps_getNumOfAutomaticSoftwareResets() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_NUM_AUTO_SOFTWARE_RESET; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 1000);
+    return data;
+}
+
+
 uint32_t i2c_command_read_write_helper(gmb_0, gmb_1, gmb_3, d1) {
     printf("Master will send data :");
     print_i2c_data(g_master_buff);
