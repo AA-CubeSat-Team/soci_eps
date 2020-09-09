@@ -66,6 +66,13 @@ instance works as slave) or board to board communication. Default is single boar
 # define I2C_EPS_CMD_RESET_COM_WATCHDOG 0x22
 # define I2C_EPS_CMD_GET_NUM_BROWN_OUT_RESET 0x31
 # define I2C_EPS_CMD_GET_NUM_AUTO_SOFTWARE_RESET 0x32
+// added 9/9
+# define I2C_EPS_CMD_GET_NUM_MANUAL_RESET 0x33
+# define I2C_EPS_CMD_GET_NUM_COMMS_WATCHDOG_RESET 0x34
+# define I2C_EPS_CMD_SWITCH_ON_ALL_PDM 0x40
+# define I2C_EPS_CMD_SWITCH_OFF_ALL_PDM 0x41
+# define I2C_EPS_CMD_GET_ACTUAL_STATE_OF_ALL_PDM 0x42
+
 
 
 // breaking apart 0xE308 into two bytes, 0x3E and 0x08. Might be a better way to do this.

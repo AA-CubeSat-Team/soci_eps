@@ -6,7 +6,6 @@
  *
  * Jerrold Erickson, 6/23/2020
  */
-// test
 
 #include "eps.h"
 
@@ -815,6 +814,57 @@ uint32_t i2c_eps_getNumOfAutomaticSoftwareResets() {
     return data;
 }
 
+// added 9/9______________________________________________________________________________________________-
+
+uint32_t i2c_eps_getNumManualReset() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_NUM_MANUAL_RESET; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 1000);
+    return data;
+}
+
+uint32_t i2c_eps_getNumCommsWatchdogReset() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_NUM_COMMS_WATCHDOG_RESET; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 1000);
+    return data;
+}
+
+//need to make just read for all the void ones ask about that
+void i2c_eps_switchOnAllPdm() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_SWITCH_ON_ALL_PDM; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+}
+
+void i2c_eps_switchOffAllPdm() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_SWITCH_OFF_ALL_PDM; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+}
+
+uint32_t i2c_eps_getActualStateOfAllPdm() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_ACTUAL_STATE_OF_ALL_PDM; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 20000);
+    return data;
+}
 
 uint32_t i2c_command_read_write_helper(gmb_0, gmb_1, gmb_3, d1) {
     printf("Master will send data :");
