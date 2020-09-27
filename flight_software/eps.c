@@ -895,6 +895,165 @@ uint32_t i2c_command_read_write_helper(gmb_0, gmb_1, gmb_3, d1) {
     return adc_count;
 }
 
+// added 9/27__________________________________________________________________________________________________
+
+
+uint32_t i2c_eps_getExpectedStateOfAllPDM() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_EXPECTED_STATE_OF_ALL_PDM; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 1000);
+    return data;
+}
+
+uint32_t i2c_eps_getInitialStateOfAllPDM() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_INITIAL_STATE_OF_ALL_PDM; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 20000);
+    return data;
+}
+
+// check these ones with team lead
+//
+uint32_t i2c_eps_setAllPDMsToInitialState() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_SET_ALL_PDM_TO_INITIAL_STATE; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+}
+
+// picks the channel to turn on
+//
+void i2c_eps_switchPdmnOn(int channel) {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_SWITCH_PDMN_ON; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = channel; // 2nd byte is 0x00
+}
+
+void i2c_eps_switchPdmnOff(int channel) {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_SWITCH_PDMN_OFF; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = channel; // 2nd byte is 0x00
+}
+
+void i2c_eps_setPDMNsInitialStateOn(int channel) {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMDI2C_EPS_CMD_SET_PDMN_INITIAL_STATE_TO_ON_SWITCH_PDMN_ON; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = channel; // 2nd byte is 0x00
+}
+
+void i2c_eps_setPDMNsInitialStateOff(int channel) {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_SET_PDMN_INITIAL_STATE_TO_OFF; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = channel; // 2nd byte is 0x00
+}
+
+uint32_t i2c_eps_getPDMNsActualStatus() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_PDMN_ACTUAL_STATUS; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 2000);
+    return data;
+}
+
+uint32_t i2c_eps_getPDMNsActualStatus() {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_PDMN_ACTUAL_STATUS; // i2c command = board status
+    // only requires 1 command byte Data[1]
+    g_master_buff[3] = I2C_EPS_DATA0; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 2000);
+    return data;
+}
+
+void i2c_eps_setPDMNsTimerLimit(int channel, int period) {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_SET_PDMN_TIMER_LIMIT; // i2c command = board status
+    g_master_buff[2] = channel;
+    g_master_buff[3] = period; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 150000);
+}
+
+uint32_t i2c_eps_getPDMNsTimerLimit(int channel) {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_PDMN_TIMER_LIMIT; // i2c command = board status
+    g_master_buff[3] = channel; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 5000);
+    return data;
+}
+
+uint32_t i2c_eps_getPDMNsCurrentTimerLimit(int channel) {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_PDMN_CURRENT_TIMER_VALUE; // i2c command = board status
+    g_master_buff[3] = channel; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 1000);
+    return data;
+}
+
+void i2c_eps_getPDMNsCurrentTimerLimit(int channel) {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_PDMN_CURRENT_TIMER_VALUE; // i2c command = board status
+    g_master_buff[3] = channel; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 1000);
+    return data;
+}
+
+void i2c_eps_getPDMNsCurrentTimerLimit(int channel) {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_GET_PDMN_CURRENT_TIMER_VALUE; // i2c command = board status
+    g_master_buff[3] = channel; // 2nd byte is 0x00
+
+    uint32_t data = i2c_command_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[3], 1000);
+    return data;
+}
+
+void i2c_eps_pcmReset(int channel) {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_PCM_RESET; // i2c command = board status
+    g_master_buff[3] = channel; // 2nd byte is 0x00
+
+}
+
+void i2c_eps_manualReset(int channel) {
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_MANUAL_RESET; // i2c command = board status
+    g_master_buff[3] = channel; // 2nd byte is 0x00
+
+}
+
+
+
 
 // batteries telemetry
 //___________________________________________________________________________________________________________
