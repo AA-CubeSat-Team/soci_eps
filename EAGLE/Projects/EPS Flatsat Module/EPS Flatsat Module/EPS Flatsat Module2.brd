@@ -2514,10 +2514,8 @@ design rules under a new name.</description>
 <contactref element="LED1" pad="A"/>
 <wire x1="14.92" y1="25.2984" x2="17.5616" y2="25.2984" width="0.508" layer="1"/>
 <wire x1="17.5616" y1="25.2984" x2="17.78" y2="25.08" width="0.2032" layer="1"/>
-<wire x1="14.859" y1="29.21" x2="14.859" y2="28.001" width="0.508" layer="1"/>
-<wire x1="14.859" y1="28.001" x2="14.92" y2="27.94" width="0.2032" layer="1"/>
-<wire x1="14.859" y1="29.21" x2="19.685" y2="34.036" width="0.508" layer="1"/>
-<wire x1="19.685" y1="34.036" x2="19.685" y2="38.735" width="0.508" layer="1"/>
+<wire x1="14.8895" y1="27.9705" x2="14.92" y2="27.94" width="0.2032" layer="1"/>
+<wire x1="19.685" y1="32.766" x2="14.8895" y2="27.9705" width="0.508" layer="1"/>
 <wire x1="19.685" y1="38.735" x2="19.304" y2="39.116" width="0.2032" layer="1"/>
 <wire x1="19.304" y1="39.116" x2="17.846" y2="39.116" width="0.508" layer="1"/>
 <wire x1="17.846" y1="39.116" x2="17.78" y2="39.05" width="0.2032" layer="1"/>
@@ -2537,7 +2535,6 @@ design rules under a new name.</description>
 <via x="19.685" y="25.4" extent="1-16" drill="0.35"/>
 <wire x1="19.685" y1="25.4" x2="19.685" y2="28.575" width="0.508" layer="16"/>
 <via x="19.685" y="28.575" extent="1-16" drill="0.35"/>
-<wire x1="19.685" y1="28.575" x2="19.685" y2="34.036" width="0.508" layer="1"/>
 <wire x1="15.24" y1="58.42" x2="15.24" y2="62.29" width="0.508" layer="1"/>
 <wire x1="15.24" y1="62.29" x2="15.24" y2="64.77" width="0.508" layer="1"/>
 <wire x1="15.24" y1="64.77" x2="19.685" y2="69.215" width="0.508" layer="1"/>
@@ -2563,6 +2560,8 @@ design rules under a new name.</description>
 <wire x1="44.45" y1="89.535" x2="44.45" y2="88.265" width="0.508" layer="16"/>
 <wire x1="15.24" y1="62.29" x2="12.7" y2="62.29" width="0.508" layer="1"/>
 <wire x1="12.7" y1="62.29" x2="10.16" y2="62.29" width="0.508" layer="1"/>
+<wire x1="19.685" y1="28.575" x2="19.685" y2="32.766" width="0.508" layer="1"/>
+<wire x1="19.685" y1="38.735" x2="19.685" y2="32.766" width="0.508" layer="1"/>
 </signal>
 <signal name="GND" class="1">
 <contactref element="J2" pad="9"/>
