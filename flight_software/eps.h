@@ -166,8 +166,47 @@ instance works as slave) or board to board communication. Default is single boar
 #define I2C_EPS_TELE_SUN_DETECTOR_CONNECTOR_SA3A_1 0x3C
 #define I2C_EPS_TELE_SUN_DETECTOR_CONNECTOR_SA3B_1 0x3D
 
+// added 11/3/20 (new eps check later)
+//__________________________________________________________
+// commands pg 9
+#define I2C_EPS_CMD_POWER_MODULE_STATUS 0x01
+#define I2C_EPS_CMD_BATTERY_MODULE_STATUS 0x02
+#define I2C_EPS_CMD_FDIR 0x03
+#define I2C_EPS_CMD_ID 0x04
+#define I2C_EPS_CMD_SET_WATCHDOG_PERIOD 0x05
+// stopped here
+#define I2C_EPS_CMD_SET_PDMS_INTIAL_STATE 0x06
+#define I2C_EPS_CMD_RESET_PDMS 0x07
+#define I2C_EPS_CMD_SWITCH_ON_OFF_PDMS 0x08
+#define I2C_EPS_CMD_SET_HOUSEKEEPING_PERIOD 0x09
+#define I2C_EPS_CMD_SET_SAFETY_HAZARD_ENVIRONMENT 0x0A
+#define I2C_EPS_CMD_GET_TELEMETRY_GROUP 0x0B
+#define I2C_EPS_CMD_FIXED_POWER_BUS_RESET 0xFE
+#define I2C_EPS_CMD_MANUAL_RESET 0xFF
 
+// telemetry pg 14
+// check if thinking about correctly 
+// for param[1] (where in I2C is parameter?) 
+// also how do you read the byte and bit 
+#define I2C_EPS_TELE_BCRS 0x00
+#define I2C_EPS_TELE_SOLAR_PANEL_SENSORS 0x01
+#define I2C_EPS_TELE_POWER_BUSES 0x02
+#define I2C_EPS_TELE_SWITCHABLE_POWER_BUSEs 0x03
+#define I2C_EPS_TELE_BATTERY_MODULE 0x04
+#define I2C_EPS_TELE_SYSTEM_DATA 0x05
 
+#define I2C_EPS_BYTE_0 0x00
+#define I2C_EPS_BYTE_2 0x02
+#define I2C_EPS_BYTE_4 0x04
+#define I2C_EPS_BYTE_6 0x06
+#define I2C_EPS_BYTE_8 0x08
+#define I2C_EPS_BYTE_10 0x10
+#define I2C_EPS_BYTE_12 0x12
+#define I2C_EPS_BYTE_14 0x14
+#define I2C_EPS_BYTE_16 0x16
+#define I2C_EPS_BYTE_18 0x18
+#define I2C_EPS_BYTE_20 0x20
+#define I2C_EPS_BYTE_22 0x22
 
 
 
