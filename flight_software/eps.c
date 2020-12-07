@@ -1247,13 +1247,14 @@ bool i2c_eps_idRegister()
 }
 
 // for watchdog, userinput period
+// only accepts 1, 2, 4 for each period in minutes
 void i2c_eps_watchdogPeriod(period)
 {
     /* Set up i2c master to send data to slave */
     g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
     g_master_buff[1] = I2C_EPS_CMD_SET_WATCHDOG_PERIOD; // i2c command = get EPS telemetry
-    g_master_buff[2] = 0x00;
-    g_master_buff[3] = period;
+    g_master_buff[2] = 0x0000 | period;
+    //g_master_buff[3] = period;
 
     // this one only needs to read
     printf("Master will send data :");
@@ -1279,7 +1280,7 @@ void i2c_eps_setPdmsInitialState(pdm_state)
 
     /* Set up i2c master to send data to slave */
     g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
-    g_master_buff[1] = I2C_EPS_CMD_SET_WATCHDOG_PERIOD; // i2c command = get EPS telemetry
+    g_master_buff[1] = I2C_EPS_CMD_SET_PDMS_INTIAL_STATE; // i2c command = get EPS telemetry
     g_master_buff[2] = 0x00;
     g_master_buff[3] = intial_pdms;
 
@@ -1301,7 +1302,7 @@ void i2c_eps_resetPdm()
 {   
     /* Set up i2c master to send data to slave */
     g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
-    g_master_buff[1] = I2C_EPS_CMD_SET_WATCHDOG_PERIOD; // i2c command = get EPS telemetry
+    g_master_buff[1] = I2C_EPS_CMD_RESET_PDMS; // i2c command = get EPS telemetry
     g_master_buff[2] = 0x00;
     g_master_buff[3] = 0xFF;
 
@@ -1319,3 +1320,130 @@ void i2c_eps_resetPdm()
     // dont need to read bc no data returned
 }
 
+// added 12/6/20
+// will skip on doing telemtry for now until answers on how it outputs is provided
+
+// for this newPdmState will turn on specific pdm 1-6 which is assigned from bit 0-5 in that order
+void i2c_eps_switchOnOffPdms(newPdmState)
+{   
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_SWITCH_ON_OFF_PDMS; // i2c command = get EPS telemetry
+    g_master_buff[2] = 0x00 
+    g_master_buff[3] = newPdmState;
+
+    // this one only needs to read
+    printf("Master will send data :");
+    print_i2c_data(g_master_buff);
+
+    // i2c write
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[0], datasize);
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[1], datasize);
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[2], datasize);
+
+    delay(5000);
+    
+    // dont need to read bc no data returned
+}
+
+// period can be 1 min 2 min or 4 min
+void i2c_eps_setHousekeepingPeriod(period)
+{   
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_SET_HOUSEKEEPING_PERIOD; // i2c command = get EPS telemetry
+    g_master_buff[2] = 0x00 
+    g_master_buff[3] = period;
+
+    // this one only needs to read
+    printf("Master will send data :");
+    print_i2c_data(g_master_buff);
+
+    // i2c write
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[0], datasize);
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[1], datasize);
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[2], datasize);
+
+    delay(5000);
+    
+    // dont need to read bc no data returned
+}
+
+// QUESTION: how is the i2c write structured
+// is it 7 bit address -> command -> param [1] -> param [0] (each a byte)
+// IF SO -> then what for PDM initial state why is it Byte 0 and not Param[0] (typo? as nothing is returned)
+
+void i2c_eps_setSafetyHazardEnvironment()
+{   
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_SET_SAFETY_HAZARD_ENVIRONMENT; // i2c command = get EPS telemetry
+    g_master_buff[2] = 0x00; 
+    g_master_buff[3] = 0xFF;
+    
+    // this one only needs to read
+    printf("Master will send data :");
+    print_i2c_data(g_master_buff);
+
+    // i2c write
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[0], datasize);
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[1], datasize);
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[2], datasize);
+
+    delay(5000);
+    
+    // dont need to read bc no data returned
+}
+
+// some ideas about telemetry
+// for telemetry, need clarification 
+#define I2C_EPS_CMD_GET_TELEMETRY_GROUP 0x0B
+
+// for bus Reset
+// ALSO ASSUMPTION: when asking for byte i am assuming its talking about only one byte of parameter
+// otherwise when it uses the term parameter, I am assuming there are 2 bytes of parameter
+// bit 1 and 0 = 1 then 3v3
+// bit 3 and 2 = 1 then 5v
+// bit 5 and 4 = 1 then 12v
+// bit 7 and 6 = 1 then Vbat
+void i2c_eps_fixedPowerBusReset(busReset)
+{   
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_FIXED_POWER_BUS_RESET; // i2c command = get EPS telemetry
+    g_master_buff[2] = 0x00 | busReset; 
+    
+    // this one only needs to read
+    printf("Master will send data :");
+    print_i2c_data(g_master_buff);
+
+    // i2c write
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[0], datasize);
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[1], datasize);
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[2], datasize);
+
+    delay(5000);
+    
+    // dont need to read bc no data returned
+}
+
+void i2c_eps_manualReset()
+{   
+    /* Set up i2c master to send data to slave */
+    g_master_buff[0] = I2C_EPS_ADDR; // i2c slave address = EPS motherboard
+    g_master_buff[1] = I2C_EPS_CMD_MANUAL_RESET; // i2c command = get EPS telemetry
+    g_master_buff[2] = 0xFF; 
+    
+    // this one only needs to read
+    printf("Master will send data :");
+    print_i2c_data(g_master_buff);
+
+    // i2c write
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[0], datasize);
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[1], datasize);
+    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[2], datasize);
+
+    delay(5000);
+    
+    // dont need to read bc no data returned
+}

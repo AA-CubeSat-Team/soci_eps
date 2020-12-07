@@ -174,9 +174,9 @@ instance works as slave) or board to board communication. Default is single boar
 #define I2C_EPS_CMD_FDIR 0x03
 #define I2C_EPS_CMD_ID 0x04
 #define I2C_EPS_CMD_SET_WATCHDOG_PERIOD 0x05
-// stopped here
 #define I2C_EPS_CMD_SET_PDMS_INTIAL_STATE 0x06
 #define I2C_EPS_CMD_RESET_PDMS 0x07
+// stopped here
 #define I2C_EPS_CMD_SWITCH_ON_OFF_PDMS 0x08
 #define I2C_EPS_CMD_SET_HOUSEKEEPING_PERIOD 0x09
 #define I2C_EPS_CMD_SET_SAFETY_HAZARD_ENVIRONMENT 0x0A
