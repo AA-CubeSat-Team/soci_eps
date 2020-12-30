@@ -7,7 +7,7 @@
  * Jerrold Erickson, 6/23/2020
  */
 
-#include "eps.h"
+#include "old_eps.h"
 
 uint8_t g_slave_buff[I2C_DATA_LENGTH];
 uint8_t g_master_buff[I2C_DATA_LENGTH];
