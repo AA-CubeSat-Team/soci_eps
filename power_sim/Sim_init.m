@@ -1,62 +1,64 @@
-%Author: Devan Tormey
-%Title: Simulation Initialization 
-%Description:
+% SOC-i Simulation Initialization 
+%
+% This file is always the first thing that should be run when doing
+% anything with this repository
 
 clear; clc; close all;
 
-% ~~~~~~~~~~~~~~~~~~
+% ~~~~~~~~~~~~~~~~~~~~~
 % Add Paths
-% ~~~~~~~~~~~~~~~~~~
+% ~~~~~~~~~~~~~~~~~~~~~
 addpath(genpath(pwd))
-addpath(genpath('soci-gnc/Src/'))
 addpath(genpath('soci-gnc/Lib/'))
 addpath(genpath('soci-gnc/Include/'))
 addpath(genpath('soci-gnc/Test/'))
 
-init_params;
-
+% ~~~~~~~~~~~~~~~~~~~~~
+% Initialize Parameters
+% ~~~~~~~~~~~~~~~~~~~~~
+init_params; 
 
 %% Clyde
-cellArea = 27; % cm^2
-Jmpp = 17.4; % mA / cm^2
-temperature = 28; % degrees C
-currentLossEOL = 0.99;
-temperatureCurrentCoef = 0.005 * cellArea; % mA / degrees C
-Impp = cellArea * Jmpp * currentLossEOL + (temperatureCurrentCoef * (temperature-28));
-
-VmppBase = 2.39; % V
-voltageLossEOL = 0.99;
-temperatureVoltageCoef = -0.0063; % V / degrees C
-VmppCell = VmppBase * voltageLossEOL + ((temperature-28) * temperatureVoltageCoef); % V
-
-cellsX = 4;
-cellsY = 5;
-cellsZ = 2;
-
-VmppX = cellsX * VmppCell; % V, +x face
-VmppY = cellsY * VmppCell; % V, -x, +y, -y faces
-VmppZ = cellsZ * VmppCell; % V, +z face
-
-%% DHV
-% cellArea = 30.18; % cm^2
-% Jmpp = 502.9 / cellArea; % mA / cm^2
+% cellArea = 27; % cm^2
+% Jmpp = 17.4; % mA / cm^2
 % temperature = 28; % degrees C
 % currentLossEOL = 0.99;
-% temperatureCurrentCoef = 0.24; % mA / degrees C
+% temperatureCurrentCoef = 0.005 * cellArea; % mA / degrees C
 % Impp = cellArea * Jmpp * currentLossEOL + (temperatureCurrentCoef * (temperature-28));
 % 
-% VmppBase = 2.409; % V
+% VmppBase = 2.39; % V
 % voltageLossEOL = 0.99;
-% temperatureVoltageCoef = -0.0062; % V / degrees C
+% temperatureVoltageCoef = -0.0063; % V / degrees C
 % VmppCell = VmppBase * voltageLossEOL + ((temperature-28) * temperatureVoltageCoef); % V
 % 
 % cellsX = 4;
-% cellsY = 4;
+% cellsY = 5;
 % cellsZ = 2;
 % 
 % VmppX = cellsX * VmppCell; % V, +x face
 % VmppY = cellsY * VmppCell; % V, -x, +y, -y faces
 % VmppZ = cellsZ * VmppCell; % V, +z face
+
+%% DHV
+cellArea = 30.18; % cm^2
+Jmpp = 502.9 / cellArea; % mA / cm^2
+temperature = 28; % degrees C
+currentLossEOL = 0.99;
+temperatureCurrentCoef = 0.24; % mA / degrees C
+Impp = cellArea * Jmpp * currentLossEOL + (temperatureCurrentCoef * (temperature-28));
+
+VmppBase = 2.409; % V
+voltageLossEOL = 0.99;
+temperatureVoltageCoef = -0.0062; % V / degrees C
+VmppCell = VmppBase * voltageLossEOL + ((temperature-28) * temperatureVoltageCoef); % V
+
+cellsX = 4;
+cellsY = 4;
+cellsZ = 2;
+
+VmppX = cellsX * VmppCell; % V, +x face
+VmppY = cellsY * VmppCell; % V, -x, +y, -y faces
+VmppZ = cellsZ * VmppCell; % V, +z face
 
 
 %% Solar panels
@@ -104,8 +106,8 @@ test_data.mtq_end = 3200;
 test_data.img_start = 2400;
 test_data.img_end = 2700;
 
-test_data.com_en = 0;
+test_data.com_en = 1;
 test_data.mtq_en = 0;
 test_data.img_en = 0;
-test_data.fixed_attitude = 0;
+test_data.fixed_attitude = 1;
 test_data.mode = 1;
