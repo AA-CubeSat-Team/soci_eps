@@ -65,6 +65,36 @@ int main(void)
     }
 }
 
+uint32_t i2c_read_write_helper(gmb_0, gmb_1, gmb_2, gmb_3, d) {
+	printf("Master will send data :");
+	print_i2c_data(g_master_buff);
+
+	// i2c write
+	I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, gmb_0, datasize);
+	I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, gmb_1, datasize);
+	I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, gmb_2, datasize);
+
+	delay(d);
+
+	//i2c read
+	I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Read, I2C_EPS_REG_ADDR, g_slave_buff, datasize);
+
+	delay(d);
+
+	printf("Master received data from slave: ");
+	print_i2c_data(g_slave_buff);
+
+	uint32_t adc_count = 0;
+	/* get the ADC count returned using bitwise operations
+	 * adc_count will be a 32-bit int of the form:
+	 * {0x00     0x00     g_slave_buff[1]     g_slave_buff[0]}
+	 * I don't know if this calculation is correct
+	 */
+	adc_count = (g_slave_buff[1] << 8) | g_slave_buff[0]);
+
+	return adc_count;
+}
+
 // added 11/24/20
 //__________________________________________________________________________________________________________________
 
