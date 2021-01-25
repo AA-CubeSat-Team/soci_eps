@@ -318,9 +318,8 @@ void i2c_eps_setPdmsInitialState(pdm_state)
     print_i2c_data(g_master_buff);
 
     // i2c write
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[0], datasize);
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[1], datasize);
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[2], datasize);
+	i2c_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[2], g_master_buff[3], 5000);
+
 
     delay(5000);
 
@@ -340,9 +339,8 @@ void i2c_eps_resetPdm()
     print_i2c_data(g_master_buff);
 
     // i2c write
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[0], datasize);
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[1], datasize);
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[2], datasize);
+	i2c_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[2], g_master_buff[3], 5000);
+
 
     delay(5000);
     
@@ -366,9 +364,8 @@ void i2c_eps_switchOnOffPdms(newPdmState)
     print_i2c_data(g_master_buff);
 
     // i2c write
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[0], datasize);
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[1], datasize);
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[2], datasize);
+	i2c_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[2], g_master_buff[3], 5000);
+
 
     delay(5000);
     
@@ -389,9 +386,8 @@ void i2c_eps_setHousekeepingPeriod(period)
     print_i2c_data(g_master_buff);
 
     // i2c write
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[0], datasize);
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[1], datasize);
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[2], datasize);
+	i2c_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[2], g_master_buff[3], 5000);
+
 
     delay(5000);
     
@@ -415,9 +411,8 @@ void i2c_eps_setSafetyHazardEnvironment()
     print_i2c_data(g_master_buff);
 
     // i2c write
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[0], datasize);
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[1], datasize);
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[2], datasize);
+	i2c_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[2], g_master_buff[3], 5000);
+
 
     delay(5000);
     
@@ -446,9 +441,8 @@ void i2c_eps_fixedPowerBusReset(busReset)
     print_i2c_data(g_master_buff);
 
     // i2c write
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[0], datasize);
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[1], datasize);
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[2], datasize);
+	i2c_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[2], g_master_buff[3], 5000);
+
 
     delay(5000);
     
@@ -467,9 +461,8 @@ void i2c_eps_manualReset()
     print_i2c_data(g_master_buff);
 
     // i2c write
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[0], datasize);
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[1], datasize);
-    I2C_read_write_lp(&master_rtos_handle, &status, I2C_EPS_ADDR, kLPI2C_Write, I2C_EPS_REG_ADDR, g_master_buff[2], datasize);
+	i2c_read_write_helper(g_master_buff[0], g_master_buff[1], g_master_buff[2], g_master_buff[3], 5000);
+
 
     delay(5000);
     
