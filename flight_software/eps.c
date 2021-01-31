@@ -5,6 +5,7 @@
  * It should not be assumed to be functional.
  *
  * Jerrold Erickson, 6/23/2020
+ * Ryan Park, edited after Jerrolds last day
  */
 
 #include "eps.h"
