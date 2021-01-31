@@ -48,6 +48,9 @@ instance works as slave) or board to board communication. Default is single boar
 
 // added 11/3/20 (new eps check later)
 //__________________________________________________________
+
+#define I2C_EPS_ADDR 0x2B
+
 // commands pg 9
 #define I2C_EPS_CMD_POWER_MODULE_STATUS 0x01
 #define I2C_EPS_CMD_BATTERY_MODULE_STATUS 0x02
@@ -59,7 +62,7 @@ instance works as slave) or board to board communication. Default is single boar
 #define I2C_EPS_CMD_SWITCH_ON_OFF_PDMS 0x08
 #define I2C_EPS_CMD_SET_HOUSEKEEPING_PERIOD 0x09
 #define I2C_EPS_CMD_SET_SAFETY_HAZARD_ENVIRONMENT 0x0A
-// put telemetry
+#define I2C_EPS_CMD_GET_TELEMETRY_GROUP 0x0B
 #define I2C_EPS_CMD_FIXED_POWER_BUS_RESET 0xFE
 #define I2C_EPS_CMD_MANUAL_RESET 0xFF
 
