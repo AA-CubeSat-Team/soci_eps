@@ -463,7 +463,7 @@ void i2c_eps_setSafetyHazardEnvironment()
 
 // TELEMETRY____________________________________________________________________________________________________________
 // Would like a check from CDH
-// added 1/30/21
+// added 2/20/21
 // for telemetry the buffer needed for the complete family is different
 // may want to add a user input line instead of families input
 
