@@ -1146,7 +1146,7 @@ void i2c_eps_setSafetyHazardEnvironment()
 // BATTERY MODULE TELEMETRY_________________________________________________________________
 
 // twos compliment times 0.5 which is needed to convert the temperatures below
-uint16_t twosComp (uint16_t x)
+static int twosComp (uint16_t x)
 {
 	// turn into 2s compliment
 	for (int i = 15; i >= 0; i--)
