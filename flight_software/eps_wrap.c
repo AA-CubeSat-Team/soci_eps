@@ -1,4 +1,4 @@
-/* This is a source file for testing the I2C commands required for the flight computer to
+﻿/* This is a source file for testing the I2C commands required for the flight computer to
  * communicate with the EPS board and the battery
  *
  * As of 6/23/2020, everything in this file is being written without any access to hardware, and is completely untested.
@@ -58,6 +58,7 @@
 #define I2C_EPS_BYTE_20 0x20
 #define I2C_EPS_BYTE_22 0x22
 
+#define BYTE16CAST 0xFF
 #define VERIFIED_COM_MASK 0x67D6
 #define NO_RETURN 9999
 
@@ -458,685 +459,694 @@ void i2c_eps_setSafetyHazardEnvironment()
 	return;
 }
 
-// TELEMETRY____________________________________________________________________________________________________________
-// Would like a check from CDH
-// added 2/20/21
-// for telemetry the buffer needed for the complete family is different
-// may want to add a user input line instead of families input
-
-// families selects which family
-// branch selects which branch in family
-
-
-//CREATE TELEMETRY INDIVIDUAL
-// BCR FAMILY________________________________________________________________________________
-int i2c_eps_telemetry_bcr8w_1_inputVoltage()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BCRS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-	
-	uint16_t tm = adc_count & 0x11;
-	return tm * .008;
-
-}
-
-int i2c_eps_telemetry_bcr8w_1_inputCurrent()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BCRS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count >> 16) & 0x11; 
-	return tm * 2;
-}
-
-int i2c_eps_telemetry_bcr8w_1_outputVoltage()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BCRS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 1) & 0x11; // I am unsure but I think + 1 should move to the next 4 bytes of array in read data
-	return tm * .008; 
-
-}
-
-int i2c_eps_telemetry_bcr8w_1_outputCurrent()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BCRS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 1) >> 16) & 0x11;
-	return tm * 2;
-}
-
-int i2c_eps_telemetry_bcr8w_2_inputVoltage()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BCRS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 2) & 0x11;
-	return tm * .008;
-}
-
-int i2c_eps_telemetry_bcr8w_2_inputCurrent()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BCRS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 2) >> 16) & 0x11;
-	return tm * 2;
-}
-
-int i2c_eps_telemetry_bcr8w_2_outputVoltage()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BCRS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 3) & 0x11;
-	return tm * .008;
-}
-
-int i2c_eps_telemetry_bcr8w_2_outputCurrent()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BCRS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 3) >> 16) & 0x11;
-	return tm * 2;
-}
-
-int i2c_eps_telemetry_bcr3w_inputVoltage()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BCRS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 4) & 0x11;
-	return tm * .008;
-}
-
-int i2c_eps_telemetry_bcr3w_inputCurrent()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BCRS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 4) >> 16) & 0x11;
-	return tm * 2;
-}
-
-int i2c_eps_telemetry_bcr3w_outputVoltage()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BCRS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 5) & 0x11;
-	return tm * .008;
-}
-
-int i2c_eps_telemetry_bcr3w_outputCurrent()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BCRS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 5) >> 16) & 0x11;
-	return tm * 2;
-}
-
-//END___________________________________________________________________________________
-
-//SOLAR PANEL TEMPERATURE_______________________________________________________________
-
-// twos compliment times 0.5 which is needed to convert the temperatures below
-int twosCompAndMultHalf(uint16_t x)
-{
-	// turn into 2s compliment
-	for (int i = 15; i >= 0; i--)
-	{
-		if (x[i] == '1')
-		{
-			x[i] = '0';
-		}
-		else
-		{
-			x[i] = '1';
-		}
-	}
-	x = x + 1;
-
-	// convert by mult by .5/bit
-	// check with members if multiple each 1 bit with .5 and add together or to multiply the whole thing by .5
-	y = x * 0.5;
-
-	return y;
-}
-
-int i2c_eps_telemetry_M_SP_tempXplus()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SOLAR_PANEL_SENSORS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = adc_count & 0x11;
-	int celcius = twosCompMultHalf(tm);
-	return celcius;
-
-}
-
-int i2c_eps_telemetry_M_SP_tempXminus()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SOLAR_PANEL_SENSORS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count >> 16) & 0x11;
-	int celcius = twosCompMultHalf(tm);
-	return celcius;
-}
-
-int i2c_eps_telemetry_M_SP_tempYplus()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SOLAR_PANEL_SENSORS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 1) & 0x11;
-	int celcius = twosCompMultHalf(tm);
-	return celcius;
-}
-
-int i2c_eps_telemetry_M_SP_tempYminus()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SOLAR_PANEL_SENSORS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 1) >> 16) & 0x11;
-	int celcius = twosCompMultHalf(tm);
-	return celcius;
-}
-
-int i2c_eps_telemetry_M_SP_tempZplus()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SOLAR_PANEL_SENSORS;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 2) & 0x11;
-	int celcius = twosCompMultHalf(tm);
-	return celcius;
-}
-
-//END
-
-// POWER BUSES______________________________________________________________________
-
-int i2c_eps_telemetry_bcr_outputVoltage()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = adc_count & 0x11;
-	return tm * 0.0030945;
-}
-
-int i2c_eps_telemetry_bcr_outputCurrent()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count >> 16) & 0x11;
-	return tm * 0.0020676;
-}
-
-int i2c_eps_telemetry_pcm_inputVoltage()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 1) & 0x11;
-	return tm * 0.0030945;
-}
-
-int i2c_eps_telemetry_pcm_inputCurrent()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 1) >> 16) & 0x11;
-	return tm * 0.0020676;
-}
-
-int i2c_eps_telemetry_3v3_powerBusVoltage()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 2) & 0x11;
-	return tm * 0.0030945;
-}
-
-int i2c_eps_telemetry_3v3_powerBusCurrent()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 2) >> 16) & 0x11;
-	return tm * 0.0020676;
-}
-
-int i2c_eps_telemetry_5v_powerBusVoltage()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 3) & 0x11;
-	return tm * 0.0030945;
-}
-
-int i2c_eps_telemetry_5v_powerBusCurrent()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 3) >> 16) & 0x11;
-	return tm * 0.0020676;
-}
-
-int i2c_eps_telemetry_Vbat_powerBusVoltage()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 4) & 0x11;
-	return tm * 0.0030945;
-}
-
-int i2c_eps_telemetry_Vbat_powerBusCurrent()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 4) >> 16) & 0x11;
-	return tm * 0.0020676;
-}
-
-int i2c_eps_telemetry_12v_powerBusVoltage()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 5) & 0x11;
-	return tm * 0.0030945;
-}
-
-int i2c_eps_telemetry_12v_powerBusCurrent()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 5) >> 16) & 0x11;
-	return tm * 0.0020676;
-}
-
-
-
-//END___________________________________________________________________________________________
-
-// SWITCHABLE POWER BUSES_______________________________________________________________________
-
-int i2c_eps_telemetry_sw1_v()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count) & 0x11;
-	return tm * 0.0030945;
-}
-
-int i2c_eps_telemetry_sw1_c()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count >> 16) & 0x11;
-	return tm * 0.0008336 - 0.010;
-}
-
-int i2c_eps_telemetry_sw2_v()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 1) & 0x11;
-	return tm * 0.0030945;
-}
-
-int i2c_eps_telemetry_sw2_c()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 1) >> 16) & 0x11;
-	return tm * 0.0008336 - 0.010;
-}
-
-int i2c_eps_telemetry_sw3_v()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 2) & 0x11;
-	return tm * 0.0030945;
-}
-
-int i2c_eps_telemetry_sw3_c()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 2) >> 16) & 0x11;
-	return tm * 0.0008336 - 0.010;
-}
-
-int i2c_eps_telemetry_sw4_v()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 3) & 0x11;
-	return tm * 0.0030945;
-}
-
-int i2c_eps_telemetry_sw4_c()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 3) >> 16) & 0x11;
-	return tm * 0.0008336 - 0.010;
-}
-
-int i2c_eps_telemetry_sw5_v()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 4) & 0x11;
-	return tm * 0.0030945;
-}
-
-int i2c_eps_telemetry_sw5_c()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 4) >> 16) & 0x11;
-	return tm * 0.0008336 - 0.010;
-}
-
-int i2c_eps_telemetry_sw6_v()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 5) & 0x11;
-	return tm * 0.0030945;
-}
-
-int i2c_eps_telemetry_sw6_c()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 5) >> 16) & 0x11;
-	return tm * 0.0008336 - 0.010;
-}
+//// TELEMETRY____________________________________________________________________________________________________________
+//// Would like a check from CDH
+//// added 2/20/21
+//// for telemetry the buffer needed for the complete family is different
+//// may want to add a user input line instead of families input
+//
+//// families selects which family
+//// branch selects which branch in family
+//
+//
+////CREATE TELEMETRY INDIVIDUAL
+//// BCR FAMILY________________________________________________________________________________
+//int i2c_eps_telemetry_bcr8w_1_inputVoltage()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BCRS;
+//
+//	uint32_t returnArray[12];
+//	i2c_read_write_helper(buffer, 4, returnArray, 5000);
+//
+//	uint16_t tm = returnArray & BYTE16CAST;
+//	return tm * .008;
+//
+//}
+//
+//int i2c_eps_telemetry_bcr8w_1_inputCurrent()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BCRS;
+//
+//	uint32_t returnArray[12];
+//	i2c_read_write_helper(buffer, 4, returnArray, 5000);
+//
+//	uint16_t tm = (returnArray >> 16) & BYTE16CAST;
+//	return tm * 2;
+//}
+//
+//int i2c_eps_telemetry_bcr8w_1_outputVoltage()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BCRS;
+//
+//	uint32_t returnArray[12];
+//	i2c_read_write_helper(buffer, 4, returnArray, 5000);
+//
+//	uint16_t tm = returnArray[1] & BYTE16CAST; // I am unsure but I think + 1 should move to the next 4 bytes of array in read data
+//	return tm * .008; 
+//
+//}
+//
+//int i2c_eps_telemetry_bcr8w_1_outputCurrent()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BCRS;
+//
+//	uint32_t returnArray[12];
+//	i2c_read_write_helper(buffer, 4, returnArray, 5000);
+//
+//	uint16_t tm = (returnArray[1] >> 16) & BYTE16CAST;
+//	return tm * 2;
+//}
+//
+//int i2c_eps_telemetry_bcr8w_2_inputVoltage()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BCRS;
+//
+//	uint32_t returnArray[12];
+//	i2c_read_write_helper(buffer, 4, returnArray, 5000);
+//
+//	uint16_t tm = returnArray[2] & BYTE16CAST;
+//
+//	return tm * .008;
+//}
+//
+//int i2c_eps_telemetry_bcr8w_2_inputCurrent()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BCRS;
+//
+//	uint32_t returnArray[12];
+//	i2c_read_write_helper(buffer, 4, returnArray, 5000);
+//
+//	uint16_t tm = (returnArray[2] >> 16) & BYTE16CAST;
+//
+//	return tm * 2;
+//}
+//
+//int i2c_eps_telemetry_bcr8w_2_outputVoltage()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BCRS;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 3) & BYTE16CAST;
+//	return tm * .008;
+//}
+//
+//int i2c_eps_telemetry_bcr8w_2_outputCurrent()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BCRS;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 3) >> 16) & BYTE16CAST;
+//	return tm * 2;
+//}
+//
+//int i2c_eps_telemetry_bcr3w_inputVoltage()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BCRS;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 4) & BYTE16CAST;
+//	return tm * .008;
+//}
+//
+//int i2c_eps_telemetry_bcr3w_inputCurrent()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BCRS;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 4) >> 16) & BYTE16CAST;
+//	return tm * 2;
+//}
+//
+//int i2c_eps_telemetry_bcr3w_outputVoltage()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BCRS;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 5) & BYTE16CAST;
+//	return tm * .008;
+//}
+//
+//int i2c_eps_telemetry_bcr3w_outputCurrent()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BCRS;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 5) >> 16) & BYTE16CAST;
+//	return tm * 2;
+//}
+//
+////END___________________________________________________________________________________
+//
+////SOLAR PANEL TEMPERATURE_______________________________________________________________
+//
+//// twos compliment times 0.5 which is needed to convert the temperatures below
+//int twosCompAndMultHalf(uint16_t x)
+//{
+//	// turn into 2s compliment
+//	for (int i = 15; i >= 0; i--)
+//	{
+//		if (x[i] == '1')
+//		{
+//			x[i] = '0';
+//		}
+//		else
+//		{
+//			x[i] = '1';
+//		}
+//	}
+//	x = x + 1;
+//
+//	// convert by mult by .5/bit
+//	// check with members if multiple each 1 bit with .5 and add together or to multiply the whole thing by .5
+//	y = x * 0.5;
+//
+//	return y;
+//}
+//
+//int i2c_eps_telemetry_M_SP_tempXplus()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SOLAR_PANEL_SENSORS;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = adc_count & BYTE16CAST;
+//	int celcius = twosCompMultHalf(tm);
+//	return celcius;
+//
+//}
+//
+//int i2c_eps_telemetry_M_SP_tempXminus()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SOLAR_PANEL_SENSORS;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count >> 16) & BYTE16CAST;
+//	int celcius = twosCompMultHalf(tm);
+//	return celcius;
+//}
+//
+//int i2c_eps_telemetry_M_SP_tempYplus()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SOLAR_PANEL_SENSORS;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 1) & BYTE16CAST;
+//	int celcius = twosCompMultHalf(tm);
+//	return celcius;
+//}
+//
+//int i2c_eps_telemetry_M_SP_tempYminus()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SOLAR_PANEL_SENSORS;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 1) >> 16) & BYTE16CAST;
+//	int celcius = twosCompMultHalf(tm);
+//	return celcius;
+//}
+//
+//int i2c_eps_telemetry_M_SP_tempZplus()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SOLAR_PANEL_SENSORS;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 2) & BYTE16CAST;
+//	int celcius = twosCompMultHalf(tm);
+//	return celcius;
+//}
+//
+////END
+//
+//// POWER BUSES______________________________________________________________________
+//
+//int i2c_eps_telemetry_bcr_outputVoltage()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = adc_count & BYTE16CAST;
+//	return tm * 0.0030945;
+//}
+//
+//int i2c_eps_telemetry_bcr_outputCurrent()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count >> 16) & BYTE16CAST;
+//	return tm * 0.0020676;
+//}
+//
+//int i2c_eps_telemetry_pcm_inputVoltage()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 1) & BYTE16CAST;
+//	return tm * 0.0030945;
+//}
+//
+//int i2c_eps_telemetry_pcm_inputCurrent()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 1) >> 16) & BYTE16CAST;
+//	return tm * 0.0020676;
+//}
+//
+//int i2c_eps_telemetry_3v3_powerBusVoltage()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 2) & BYTE16CAST;
+//	return tm * 0.0030945;
+//}
+//
+//int i2c_eps_telemetry_3v3_powerBusCurrent()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 2) >> 16) & BYTE16CAST;
+//	return tm * 0.0020676;
+//}
+//
+//int i2c_eps_telemetry_5v_powerBusVoltage()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 3) & BYTE16CAST;
+//	return tm * 0.0030945;
+//}
+//
+//int i2c_eps_telemetry_5v_powerBusCurrent()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 3) >> 16) & BYTE16CAST;
+//	return tm * 0.0020676;
+//}
+//
+//int i2c_eps_telemetry_Vbat_powerBusVoltage()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 4) & BYTE16CAST;
+//	return tm * 0.0030945;
+//}
+//
+//int i2c_eps_telemetry_Vbat_powerBusCurrent()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 4) >> 16) & BYTE16CAST;
+//	return tm * 0.0020676;
+//}
+//
+//int i2c_eps_telemetry_12v_powerBusVoltage()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 5) & BYTE16CAST;
+//	return tm * 0.0030945;
+//}
+//
+//int i2c_eps_telemetry_12v_powerBusCurrent()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 5) >> 16) & BYTE16CAST;
+//	return tm * 0.0020676;
+//}
+//
+//
+//
+////END___________________________________________________________________________________________
+//
+//// SWITCHABLE POWER BUSES_______________________________________________________________________
+//
+//int i2c_eps_telemetry_sw1_v()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
+//
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count) & BYTE16CAST;
+//	return tm * 0.0030945;
+//}
+//
+//int i2c_eps_telemetry_sw1_c()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count >> 16) & BYTE16CAST;
+//	return tm * 0.0008336 - 0.010;
+//}
+//
+//int i2c_eps_telemetry_sw2_v()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 1) & BYTE16CAST;
+//	return tm * 0.0030945;
+//}
+//
+//int i2c_eps_telemetry_sw2_c()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 1) >> 16) & BYTE16CAST;
+//	return tm * 0.0008336 - 0.010;
+//}
+//
+//int i2c_eps_telemetry_sw3_v()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 2) & BYTE16CAST;
+//	return tm * 0.0030945;
+//}
+//
+//int i2c_eps_telemetry_sw3_c()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 2) >> 16) & BYTE16CAST;
+//	return tm * 0.0008336 - 0.010;
+//}
+//
+//int i2c_eps_telemetry_sw4_v()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 3) & BYTE16CAST;
+//	return tm * 0.0030945;
+//}
+//
+//int i2c_eps_telemetry_sw4_c()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 3) >> 16) & BYTE16CAST;
+//	return tm * 0.0008336 - 0.010;
+//}
+//
+//int i2c_eps_telemetry_sw5_v()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 4) & BYTE16CAST;
+//	return tm * 0.0030945;
+//}
+//
+//int i2c_eps_telemetry_sw5_c()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 4) >> 16) & BYTE16CAST;
+//	return tm * 0.0008336 - 0.010;
+//}
+//
+//int i2c_eps_telemetry_sw6_v()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 5) & BYTE16CAST;
+//	return tm * 0.0030945;
+//}
+//
+//int i2c_eps_telemetry_sw6_c()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SWITCHABLE_POWER_BUSES;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 5) >> 16) & BYTE16CAST;
+//	return tm * 0.0008336 - 0.010;
+//}
 
 //END_______________________________________________________________________________________
 
 // BATTERY MODULE TELEMETRY_________________________________________________________________
 
 // twos compliment times 0.5 which is needed to convert the temperatures below
-int twosComp (uint16_t x)
+uint16_t twosComp (uint16_t x)
 {
 	// turn into 2s compliment
 	for (int i = 15; i >= 0; i--)
@@ -1155,239 +1165,244 @@ int twosComp (uint16_t x)
 	return x;
 }
 
-
-int i2c_eps_telemetry_vbat_1()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count) & 0x11;
-	return tm * 4.883;
-
-}
-
-int i2c_eps_telemetry_vbat_2()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count >> 16) & 0x11;
-	return tm * 4.883;
-
-}	
-
-int i2c_eps_telemetry_ibat()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 1) & 0x11;
-	int value = twosComp(tm);
-	return value * 0.26;
-}
-
-int i2c_eps_telemetry_bat_temp()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 1) >> 16) & 0x11;
-	int value = twosComp(tm);
-	return value * 0.10;
-}
-
-int i2c_eps_telemetry_pcb_temp()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 2) & 0x11;
-	int value = twosComp(tm);
-	return value * 0.125;
-}
-
-int i2c_eps_telemetry_availableCap()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 2) >> 16) & 0x11;
-	return tm * 1.6;
-
-}
-
-int i2c_eps_telemetry_remainingCap()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 3) & 0x11;
-	return tm;
-}
-
-int i2c_eps_telemetry_accumulatedBatteryCurrent()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 3) >> 16) & 0x11;
-	return tm * 1.042;
-}
-
-//END__________________________________________________________________________________
-
-// SYSTEM DATA__________________________________________________________________________
-
-int i2c_eps_telemetry_watchdogPeriod()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SYSTEM_DATA;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count) & 0x11;
-	return data;
-}
-
-int i2c_eps_telemetry_pdmsInitialState()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SYSTEM_DATA;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count) >> 16) & 0x11;
-	return data;
-}
-
-int i2c_eps_telemetry_pdmsState()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SYSTEM_DATA;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 1) & 0x11;
-	return data;
-}
-
-int i2c_eps_telemetry_housekeepingPeriod()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SYSTEM_DATA;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = ((adc_count + 1) >> 16) & 0x11;
-	return data;
-}
-
-bool i2c_eps_telemetry_batteryHeaterStatus()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_SYSTEM_DATA;
-
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
-
-	uint16_t tm = (adc_count + 2) & 0x11;
-	if (tm == 0x00) 
-	{
-		return false;
-	}
-	else 
-	{
-		return true;
-	}
-}
-
-int i2c_eps_telemetry_safetyHazardEnvironment()
-{
-	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
-
-	/* Set up i2c master to send data to slave */
-	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
-	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
-	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
-
-	uint16_t tm = ((adc_count + 2) >> 16) & 0x11;
-	return data;
-}
+//int binaryToInt (uint16_t x)
+//{
+//
+//}
+//
+//int i2c_eps_telemetry_vbat_1()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count) & BYTE16CAST;
+//	return tm * 4.883;
+//
+//}
+//
+//int i2c_eps_telemetry_vbat_2()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count >> 16) & BYTE16CAST;
+//	return tm * 4.883;
+//
+//}	
+//
+//int i2c_eps_telemetry_ibat()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 1) & BYTE16CAST;
+//	int value = twosComp(tm);
+//	return value * 0.26;
+//}
+//
+//int i2c_eps_telemetry_bat_temp()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 1) >> 16) & BYTE16CAST;
+//	int value = twosComp(tm);
+//	return value * 0.10;
+//}
+//
+//int i2c_eps_telemetry_pcb_temp()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 2) & BYTE16CAST;
+//	int value = twosComp(tm);
+//	return value * 0.125;
+//}
+//
+//int i2c_eps_telemetry_availableCap()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 2) >> 16) & BYTE16CAST;
+//	return tm * 1.6;
+//
+//}
+//
+//int i2c_eps_telemetry_remainingCap()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 3) & BYTE16CAST;
+//	return tm;
+//}
+//
+//int i2c_eps_telemetry_accumulatedBatteryCurrent()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 3) >> 16) & BYTE16CAST;
+//	return tm * 1.042;
+//}
+//
+////END__________________________________________________________________________________
+//
+//// SYSTEM DATA__________________________________________________________________________
+//
+//int i2c_eps_telemetry_watchdogPeriod()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SYSTEM_DATA;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count) & BYTE16CAST;
+//	return data;
+//}
+//
+//int i2c_eps_telemetry_pdmsInitialState()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SYSTEM_DATA;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count) >> 16) & BYTE16CAST;
+//	return data;
+//}
+//
+//int i2c_eps_telemetry_pdmsState()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SYSTEM_DATA;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 1) & BYTE16CAST;
+//	return data;
+//}
+//
+//int i2c_eps_telemetry_housekeepingPeriod()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SYSTEM_DATA;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = ((adc_count + 1) >> 16) & BYTE16CAST;
+//	return data;
+//}
+//
+//bool i2c_eps_telemetry_batteryHeaterStatus()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_SYSTEM_DATA;
+//
+//	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+//
+//	uint16_t tm = (adc_count + 2) & BYTE16CAST;
+//	if (tm == 0x00) 
+//	{
+//		return false;
+//	}
+//	else 
+//	{
+//		return true;
+//	}
+//}
+//
+//int i2c_eps_telemetry_safetyHazardEnvironment()
+//{
+//	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
+//
+//	/* Set up i2c master to send data to slave */
+//	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
+//	buffer[1] = I2C_EPS_CMD_GET_TELEMETRY_GROUP; // i2c command = get EPS telemetry
+//	buffer[2] = I2C_EPS_TELE_BATTERY_MODULE;
+//
+//	uint16_t tm = ((adc_count + 2) >> 16) & BYTE16CAST;
+//	return data;
+//}
 
 
 // END ________________________________________________________________________________
 
 
-
-
-int i2c_eps_getTelemetryGroup(families, branch)
+// VERSION 2 OF TELEMETRY - SAVES RUNTIME AND SPACE____________________________________
+// I feel like for convenience we can have user type the family they want and it will be
+// the input for families which can set the buffer
+char i2c_eps_getTelemetryGroup(families, branch)
 {
 	/* Set up i2c master to send data to slave */
 	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
@@ -1405,7 +1420,9 @@ int i2c_eps_getTelemetryGroup(families, branch)
 	buffer[2] = families;
 
 
-	i2c_read_write_helper(buffer, 4, &adc_count, 5000);
+	uint32_t returnArray[6]; //holds array of 24 bytes
+
+	i2c_read_write_helper(buffer, 4, returnArray, 5000); 
 
 	/* get the ADC count returned using bitwise operations
 	 * adc_count will be a 32-bit int of the form:
@@ -1422,96 +1439,70 @@ int i2c_eps_getTelemetryGroup(families, branch)
 	 // 16 bytes		Battery Module Telemetry
 	 // 12 bytes		System Data
 
-	if (branch == 0)
-	{
-		adc_count = (g_slave_buff[1] << 8) | (g_slave_buff[0]);
-	}
-	else if (branch == 2)
-	{
-		adc_count = (g_slave_buff[3] << 8) | (g_slave_buff[2]);
-	}
-	else if (branch == 4)
-	{
-		adc_count = (g_slave_buff[5] << 8) | (g_slave_buff[4]);
-	}
-	else if (branch == 6)
-	{
-		adc_count = (g_slave_buff[7] << 8) | (g_slave_buff[6]);
-	}
-	else if (branch == 8)
-	{
-		adc_count = (g_slave_buff[9] << 8) | (g_slave_buff[8]);
-	}
-	else if (branch == 10)
-	{
-		adc_count = (g_slave_buff[11] << 8) | (g_slave_buff[10]);
-	}
-	else if (branch == 12)
-	{
-		adc_count = (g_slave_buff[13] << 8) | (g_slave_buff[12]);
-	}
-	else if (branch == 14)
-	{
-		adc_count = (g_slave_buff[15] << 8) | (g_slave_buff[14]);
-	}
-	else if (branch == 16)
-	{
-		adc_count = (g_slave_buff[17] << 8) | (g_slave_buff[16]);
-	}
-	else if (branch == 18)
-	{
-		adc_count = (g_slave_buff[19] << 8) | (g_slave_buff[18]);
-	}
-	else if (branch == 20)
-	{
-		adc_count = (g_slave_buff[21] << 8) | (g_slave_buff[20]);
-	}
-	else if (branch == 22)
-	{
-		adc_count = (g_slave_buff[23] << 8) | (g_slave_buff[21]);
-	}
-	else
-	{
-		adc_count = 12121212; // error
-	}
+	char familydata;
 
-	int done;
 	// for calculations on which family
 	if (families == 0x00)
 	{
-		done = telemetry_bcrs(adc_count, branch);
+		familydata = telemetry_bcrs(returnArray);
 	}
 	else if (families == 0x01)
 	{
-		done = telemetry_solarPanelSensors(adc_count, branch);
+		familydata = telemetry_solarPanelSensors(returnArray);
 	}
 	else if (families == 0x02)
 	{
-		done = telemetry_powerBuses(adc_count, branch);
+		familydata = telemetry_powerBuses(returnArray);
 	}
 	else if (families == 0x03)
 	{
-		done = telemetry_switchablePowerBuses(adc_count, branch);
+		familydata = telemetry_switchablePowerBuses(returnArray);
 	}
 	else if (families == 0x04)
 	{
-		done = telemetry_batteryModule(adc_count, branch);
+		familydata = telemetry_batteryModule(returnArray);
 	}
 	else if (families == 0x05)
 	{
-		done = telemetry_systemData(adc_count, branch);
+		familydata = telemetry_systemData(returnArray);
 	}
 	else
 	{
-		done = 12121212; // error
+		familydata = 12121212; // error
 	}
 
-	return done;
+	return familydata;
 }
 
-int telemetry_bcrs(x)
+char telemetry_bcrs(uint32_t * data)
 {
-	int y = 0;
+	int tm1 = (data[0] & BYTE16CAST) * 0.008;
+	int tm2 = ((data[0] >> 16) & BYTE16CAST) * 2;
+	int tm3 = (data[1] & BYTE16CAST) * 0.008;
+	int tm4 = ((data[1] >> 16) & BYTE16CAST) * 2;
+	int tm5 = (data[2] & BYTE16CAST) * 0.008;
+	int tm6 = ((data[2] >> 16) & BYTE16CAST) * 2;
+	int tm7 = (data[3] & BYTE16CAST) * 0.008;
+	int tm8 = ((data[3] >> 16) & BYTE16CAST) * 2;
+	int tm9 = (data[4] & BYTE16CAST) * 0.008;
+	int tm10 = ((data[4] >> 16) & BYTE16CAST) * 5;
+	int tm11 = (data[5] & BYTE16CAST) * 0.008;
+	int tm12 = ((data[5] >> 16) & BYTE16CAST) * 2;
+
+	PRINTF("BCR8W_1 Input Voltage = %d V \n", tm1);
+	PRINTF("BCR8W_1 Input Current = %d mA \n", tm2);
+	PRINTF("BCR8W_1 Output Voltage = %d V \n", tm3);
+	PRINTF("BCR8W_1 Output Current = %d mA \n", tm4);
+	PRINTF("BCR8W_2 Input Voltage = %d V \n", tm5);
+	PRINTF("BCR8W_2 Input Current = %d mA \n", tm6);
+	PRINTF("BCR8W_2 Output Voltage = %d V \n", tm7);
+	PRINTF("BCR8W_2 Output Current = %d mA \n", tm8);
+	PRINTF("BCR3W Input Voltage = %d V \n", tm9);
+	PRINTF("BCR3W Input Current = %d mA \n", tm10);
+	PRINTF("BCR3W Output Voltage = %d V \n", tm11);
+	PRINTF("BCR3W Output Current = %d mA \n", tm12);
+
+	/*int y = 0;
 	if ((branch % 4 == 0) | (branch == 0))
 	{
 		y = x * .008;
@@ -1519,14 +1510,54 @@ int telemetry_bcrs(x)
 	else {
 		y = x * 2;
 	}
-	return y;
+	return y;*/
 }
 
-
-
-int telemetry_powerBuses(x, branch)
+char telemetry_solarPanelSensors(uint32_t * data)
 {
-	int y = 0;
+	int tm1 = twosComp(data[0] & BYTE16CAST) * 0.5;
+	int tm2 = twosComp((data[0] >> 16) & BYTE16CAST) * 0.5;
+	int tm3 = twosComp(data[1] & BYTE16CAST) * 0.5;
+	int tm4 = twosComp((data[1] >> 16) & BYTE16CAST) * 0.5;
+	int tm5 = twosComp(data[2] & BYTE16CAST) * 0.5;
+
+	PRINTF("M_SP Temperature X+ = %d C \n", tm1);
+	PRINTF("M_SP Temperature X- = %d C \n", tm2);
+	PRINTF("M_SP Temperature Y+ = %d C \n", tm3);
+	PRINTF("M_SP Temperature Y- = %d C \n", tm4);
+	PRINTF("M_SP Temperature Z+ = %d C \n", tm5);
+
+}
+
+char telemetry_powerBuses(uint32_t * data)
+{
+	int tm1 = (data[0] & BYTE16CAST) * 0.0030945;
+	int tm2 = ((data[0] >> 16) & BYTE16CAST) * 0.0020676;
+	int tm3 = (data[1] & BYTE16CAST) * 0.0030945;
+	int tm4 = ((data[1] >> 16) & BYTE16CAST) * 0.0020676;
+	int tm5 = (data[2] & BYTE16CAST) * 0.0030945;
+	int tm6 = ((data[2] >> 16) & BYTE16CAST) * 0.0020676;
+	int tm7 = (data[3] & BYTE16CAST) * 0.0030945;
+	int tm8 = ((data[3] >> 16) & BYTE16CAST) * 0.0020676;
+	int tm9 = (data[4] & BYTE16CAST) * 0.0030945;
+	int tm10 = ((data[4] >> 16) & BYTE16CAST) * 0.0020676;
+	int tm11 = (data[5] & BYTE16CAST) * 0.0030945;
+	int tm12 = ((data[5] >> 16) & BYTE16CAST) * 0.0020676;
+
+	PRINTF("BCR Output Voltage = %d V \n", tm1);
+	PRINTF("BCR Output Current = %d A \n", tm2);
+	PRINTF("PCM Input Voltage = %d V \n", tm3);
+	PRINTF("PCM Input Current = %d A \n", tm4);
+	PRINTF("3V3 Power Bus Voltage = %d V \n", tm5);
+	PRINTF("3V3 Power Bus Current = %d A \n", tm6);
+	PRINTF("5V Power Bus Voltage = %d V \n", tm7);
+	PRINTF("5V Power Bus Current = %d A \n", tm8);
+	PRINTF("Vbat Power Bus Voltage = %d V \n", tm9);
+	PRINTF("Vbat Power Bus Current = %d A \n", tm10);
+	PRINTF("12V Power Bus Voltage = %d V \n", tm11);
+	PRINTF("12V Power Bus Current = %d A \n", tm12);
+
+	/*int y = 0;
 	if ((branch % 4 == 0) | (branch == 0))
 	{
 		y = x * 0.0030945;
@@ -1534,12 +1565,38 @@ int telemetry_powerBuses(x, branch)
 	else {
 		y = x * 0.0020676;
 	}
-	return y;
+	return y;*/
 }
 
-int telemetry_switchablePowerBuses(x, branch)
+char telemetry_switchablePowerBuses(uint32_t * data)
 {
-	int y = 0;
+	int tm1 = (data[0] & BYTE16CAST) * 0.0030945;
+	int tm2 = ((data[0] >> 16) & BYTE16CAST) * 0.0008336 − 0.010;
+	int tm3 = (data[1] & BYTE16CAST) * 0.0030945;
+	int tm4 = ((data[1] >> 16) & BYTE16CAST) * 0.0008336 − 0.010;
+	int tm5 = (data[2] & BYTE16CAST) * 0.0030945;
+	int tm6 = ((data[2] >> 16) & BYTE16CAST) * 0.0008336 − 0.010;
+	int tm7 = (data[3] & BYTE16CAST) * 0.0030945;
+	int tm8 = ((data[3] >> 16) & BYTE16CAST) * 0.0008336 − 0.010;
+	int tm9 = (data[4] & BYTE16CAST) * 0.0030945;
+	int tm10 = ((data[4] >> 16) & BYTE16CAST) * 0.0008336 − 0.010;
+	int tm11 = (data[5] & BYTE16CAST) * 0.0030945;
+	int tm12 = ((data[5] >> 16) & BYTE16CAST) * 0.0008336 − 0.010;
+
+	PRINTF("SW1_V = %d V \n", tm1);
+	PRINTF("SW1_C = %d A \n", tm2);
+	PRINTF("SW2_V = %d V \n", tm3);
+	PRINTF("SW2_C = %d A \n", tm4);
+	PRINTF("SW3_V = %d V \n", tm5);
+	PRINTF("SW3_C = %d A \n", tm6);
+	PRINTF("SW4_V = %d V \n", tm7);
+	PRINTF("SW4_C = %d A \n", tm8);
+	PRINTF("SW5_V = %d V \n", tm9);
+	PRINTF("SW5_C = %d A \n", tm10);
+	PRINTF("SW6_V = %d V \n", tm11);
+	PRINTF("SW6_C = %d A \n", tm12);
+
+	/*int y = 0;
 	if ((branch % 4 == 0) | (branch == 0))
 	{
 		y = x * 0.0030945;
@@ -1547,46 +1604,88 @@ int telemetry_switchablePowerBuses(x, branch)
 	else {
 		y = x * 0.0008336 - 0.010;
 	}
-	return y;
+	return y;*/
 }
 
-int telemetry_batteryModule(x, branch)
+char telemetry_batteryModule(uint32_t * data)
 {
-	int y = 0;
-	if ((branch == 0) | (branch == 2))
-	{
-		y = x * 4.883;
-	}
-	else if (branch == 4)
-	{
-		y = x * 0.26;
-	}
-	else if (branch == 6)
-	{
-		y = x * 0.1;
-	}
-	else if (branch == 8)
-	{
-		y = x * 0.125;
-	}
-	else if (branch == 10)
-	{
-		y = x * 1.6;
-	}
-	else if (branch == 12)
-	{
-		y = x;
-	}
-	else if (branch == 14)
-	{
-		y = x * 1.042;
-	}
-	else
-	{
-		y = 121212; // in case it is out of scope
-	}
-	return y;
+	int tm1 = (data[0] & BYTE16CAST) * 4.883;
+	int tm2 = ((data[0] >> 16) & BYTE16CAST) * 4.883;
+	int tm3 = twosComp(data[1] & BYTE16CAST) * 0.26;
+	int tm4 = twosComp((data[1] >> 16) & BYTE16CAST) * 0.1;
+	int tm5 = twosComp(data[2] & BYTE16CAST) * 0.125;
+	int tm6 = ((data[2] >> 16) & BYTE16CAST) * 1.6;
+	int tm7 = (data[3] & BYTE16CAST);
+	int tm8 = ((data[3] >> 16) & BYTE16CAST) * 1.042;
+
+	PRINTF("VBAT_1 = %d mV \n", tm1);
+	PRINTF("VBAT_2 = %d mV \n", tm2);
+	PRINTF("IBAT = %d mA \n", tm3);
+	PRINTF("BAT_TEMP = %d C \n", tm4);
+	PRINTF("PCB_TEMP = %d C \n", tm5);
+	PRINTF("Available Capacity = %d mAh \n", tm6);
+	PRINTF("Remaining Capacity = %d %% \n", tm7);
+	PRINTF("Accumulated Battery Current = %d mAh \n", tm8);
+
+	//int y = 0;
+	//if ((branch == 0) | (branch == 2))
+	//{
+	//	y = x * 4.883;
+	//}
+	//else if (branch == 4)
+	//{
+	//	y = x * 0.26;
+	//}
+	//else if (branch == 6)
+	//{
+	//	y = x * 0.1;
+	//}
+	//else if (branch == 8)
+	//{
+	//	y = x * 0.125;
+	//}
+	//else if (branch == 10)
+	//{
+	//	y = x * 1.6;
+	//}
+	//else if (branch == 12)
+	//{
+	//	y = x;
+	//}
+	//else if (branch == 14)
+	//{
+	//	y = x * 1.042;
+	//}
+	//else
+	//{
+	//	y = 121212; // in case it is out of scope
+	//}
+	//return y;
 }
+
+char telemetry_systemData(uint32_t * data)
+{
+	int tm1 = (data[0] & BYTE16CAST);
+	int tm2 = ((data[0] >> 16) & BYTE16CAST);
+	int tm3 = (data[1] & BYTE16CAST);
+	int tm4 = ((data[1] >> 16) & BYTE16CAST);
+	int tm5 = (data[2] & BYTE16CAST);
+	int tm6 = ((data[2] >> 16) & BYTE16CAST);
+
+	PRINTF("Watchdog period = %d \n", tm1);
+	PRINTF("PDMs Initial State = %d \n", tm2);
+	PRINTF("PDMs State = %d \n", tm3);
+	PRINTF("Housekeeping period = %d \n", tm4);
+	if (tm5 == 0) {
+		PRINTF("Battery Heater Status = OFF \n", tm5);
+	}
+	else {
+		PRINTF("Battery Heater Status = ON \n", tm5);
+
+	}
+	PRINTF("Safety hazard environment = %d \n", tm6);
+}
+
 
 
 // TELEMETRY ENDS HERE
