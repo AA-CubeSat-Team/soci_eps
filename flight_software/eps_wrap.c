@@ -497,7 +497,7 @@ static int twosComp (uint16_t x)
 // VERSION 2 OF TELEMETRY - SAVES RUNTIME AND SPACE____________________________________
 // I feel like for convenience we can have user type the family they want and it will be
 // the input for families which can set the buffer
-char i2c_eps_getTelemetryGroup(families, branch)
+void i2c_eps_getTelemetryGroup(uint16_t families)
 {
 	/* Set up i2c master to send data to slave */
 	buffer[0] = EPS_SLAVE_ADDR; // i2c slave address = EPS motherboard
@@ -534,39 +534,33 @@ char i2c_eps_getTelemetryGroup(families, branch)
 	 // 16 bytes		Battery Module Telemetry
 	 // 12 bytes		System Data
 
-	char familydata;
-
 	// for calculations on which family
 	if (families == 0x00)
 	{
-		familydata = telemetry_bcrs(returnArray);
+		telemetry_bcrs(returnArray);
 	}
 	else if (families == 0x01)
 	{
-		familydata = telemetry_solarPanelSensors(returnArray);
+		telemetry_solarPanelSensors(returnArray);
 	}
 	else if (families == 0x02)
 	{
-		familydata = telemetry_powerBuses(returnArray);
+		telemetry_powerBuses(returnArray);
 	}
 	else if (families == 0x03)
 	{
-		familydata = telemetry_switchablePowerBuses(returnArray);
+		telemetry_switchablePowerBuses(returnArray);
 	}
 	else if (families == 0x04)
 	{
-		familydata = telemetry_batteryModule(returnArray);
+		telemetry_batteryModule(returnArray);
 	}
 	else if (families == 0x05)
 	{
-		familydata = telemetry_systemData(returnArray);
-	}
-	else
-	{
-		familydata = 12121212; // error
+		telemetry_systemData(returnArray);
 	}
 
-	return familydata;
+	return;
 }
 
 char telemetry_bcrs(uint32_t * data)
@@ -597,15 +591,6 @@ char telemetry_bcrs(uint32_t * data)
 	PRINTF("BCR3W Output Voltage = %d V \n", tm11);
 	PRINTF("BCR3W Output Current = %d mA \n", tm12);
 
-	/*int y = 0;
-	if ((branch % 4 == 0) | (branch == 0))
-	{
-		y = x * .008;
-	}
-	else {
-		y = x * 2;
-	}
-	return y;*/
 }
 
 char telemetry_solarPanelSensors(uint32_t * data)
@@ -652,15 +637,6 @@ char telemetry_powerBuses(uint32_t * data)
 	PRINTF("12V Power Bus Voltage = %d V \n", tm11);
 	PRINTF("12V Power Bus Current = %d A \n", tm12);
 
-	/*int y = 0;
-	if ((branch % 4 == 0) | (branch == 0))
-	{
-		y = x * 0.0030945;
-	}
-	else {
-		y = x * 0.0020676;
-	}
-	return y;*/
 }
 
 char telemetry_switchablePowerBuses(uint32_t * data)
@@ -691,15 +667,6 @@ char telemetry_switchablePowerBuses(uint32_t * data)
 	PRINTF("SW6_V = %d V \n", tm11);
 	PRINTF("SW6_C = %d A \n", tm12);
 
-	/*int y = 0;
-	if ((branch % 4 == 0) | (branch == 0))
-	{
-		y = x * 0.0030945;
-	}
-	else {
-		y = x * 0.0008336 - 0.010;
-	}
-	return y;*/
 }
 
 char telemetry_batteryModule(uint32_t * data)
@@ -722,40 +689,6 @@ char telemetry_batteryModule(uint32_t * data)
 	PRINTF("Remaining Capacity = %d %% \n", tm7);
 	PRINTF("Accumulated Battery Current = %d mAh \n", tm8);
 
-	//int y = 0;
-	//if ((branch == 0) | (branch == 2))
-	//{
-	//	y = x * 4.883;
-	//}
-	//else if (branch == 4)
-	//{
-	//	y = x * 0.26;
-	//}
-	//else if (branch == 6)
-	//{
-	//	y = x * 0.1;
-	//}
-	//else if (branch == 8)
-	//{
-	//	y = x * 0.125;
-	//}
-	//else if (branch == 10)
-	//{
-	//	y = x * 1.6;
-	//}
-	//else if (branch == 12)
-	//{
-	//	y = x;
-	//}
-	//else if (branch == 14)
-	//{
-	//	y = x * 1.042;
-	//}
-	//else
-	//{
-	//	y = 121212; // in case it is out of scope
-	//}
-	//return y;
 }
 
 char telemetry_systemData(uint32_t * data)
