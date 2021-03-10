@@ -6,9 +6,20 @@
  *
  * Jerrold Erickson, 6/23/2020
  * Ryan Park, 2/27/2021
- * Pin #75 GPIO_AD_B1_14	I2C1_SCL
- * Pin #74 GPIO_AD_B1_15	I2C1_SDA
+ *
+MCU Pinouts:
+
+EPS:
+
+75	GPIO_AD_B1_14	I2C1_SCL	EPS, MAG1, GYRO1
+74	GPIO_AD_B1_15	I2C1_SDA	EPS, MAG1, GYRO1
  */
+
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "timers.h"
+
 #include <stdbool.h>
 #include "eps_wrap.h"
 #include "fsl_lpi2c.h" //need these here? already in peripherals
@@ -27,10 +38,7 @@
 #define I2C_EPS_CMD_SWITCH_ON_OFF_PDMS 0x08
 #define I2C_EPS_CMD_SET_HOUSEKEEPING_PERIOD 0x09
 #define I2C_EPS_CMD_SET_SAFETY_HAZARD_ENVIRONMENT 0x0A
-
- // put telemetry
 #define I2C_EPS_CMD_GET_TELEMETRY_GROUP 0x0B
-
 #define I2C_EPS_CMD_FIXED_POWER_BUS_RESET 0xFE
 #define I2C_EPS_CMD_MANUAL_RESET 0xFF
 
@@ -67,32 +75,30 @@
 #define I2C_DATA_LENGTH 4 //?
 
 uint8_t buffer[I2C_DATA_LENGTH];
-
 static uint32_t adc_count;
 
 bool eps_healthcheck() {
 	PRINTF("checking the health of eps!\r\n");
-	i2c_eps_batteryModuleStatus();
-	i2c_eps_powerModuleStatus();
+	//	TickType_t xLastWakeTime = xTaskGetTickCount();
+	//	vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS( 10 ));
+	//	PRINTF("Finish delay\r\n");
 	return true;
 }
 
 
 //uint8_t kLPI2C_Write = 1; // not sure where this is defined, but I think it differentiates between read/write commands
 //uint8_t kLPI2C_Read = 0; // not sure where this is defined, but I think it differentiates between read/write commands
-//
-///* the I2C_read_write_lp function is designed to write to registers within the i2c slave device, so writing i2c data looks like this:
-// * [device address -> register address -> data]
-// * The EPS/battery do not use registers like this, and instead just follow a format like:
-// * [device address -> command -> parameters]
-// * So, this register address is just temporary. A more complete i2c library is needed.
-// */
 
-//uint8_t I2C_EPS_REG_ADDR = 1;
-//size_t datasize = 1U;
-//
-//
-//
+/* the I2C_read_write_lp function is designed to write to registers within the i2c slave device, so writing i2c data looks like this:
+ * [device address -> register address -> data]
+ * The EPS/battery do not use registers like this, and instead just follow a format like:
+ * [device address -> command -> parameters]
+ * So, this register address is just temporary. A more complete i2c library is needed.
+ */
+
+uint8_t I2C_EPS_REG_ADDR = 1;
+size_t datasize = 1U;
+
 //int main(void)
 //{
 //    uint32_t i = 0;
@@ -169,7 +175,6 @@ static void i2c_read_write_helper(uint8_t* i2c_send_buffer, size_t data_size, ui
 
 //	adc_count = (g_slave_buff[1] << 8) | g_slave_buff[0]);
 
-	return adc_count;
 }
 
 // added 11/24/20
@@ -181,8 +186,6 @@ double i2c_eps_getBatteryLevel()
 	return 0.0;
 }
 
-// power module status and the battery module status were updated to return adc_count for CDH 
-// to determine if hard reset is needed. 
 uint32_t i2c_eps_powerModuleStatus()
 {
 	memset(buffer, 0, sizeof(*buffer)*I2C_DATA_LENGTH);
@@ -462,6 +465,7 @@ void i2c_eps_setSafetyHazardEnvironment()
 	return;
 }
 
+
 //// TELEMETRY____________________________________________________________________________________________________________
 //// Would like a check from CDH
 //// added 2/20/21
@@ -472,7 +476,7 @@ void i2c_eps_setSafetyHazardEnvironment()
 
 
 // twos compliment times 0.5 which is needed to convert the temperatures below
-static int twosComp (uint16_t x)
+static int twosComp(uint16_t x)
 {
 	// turn into 2s compliment
 	for (int i = 15; i >= 0; i--)
@@ -517,7 +521,7 @@ void i2c_eps_getTelemetryGroup(uint16_t families)
 
 	uint32_t returnArray[6]; //holds array of 24 bytes
 
-	i2c_read_write_helper(buffer, 4, returnArray, 5000); 
+	i2c_read_write_helper(buffer, 4, returnArray, 5000);
 
 	/* get the ADC count returned using bitwise operations
 	 * adc_count will be a 32-bit int of the form:
@@ -718,7 +722,6 @@ char telemetry_systemData(uint32_t * data)
 
 // TELEMETRY ENDS HERE
 //____________________________________________________________________________________________________________________________
-
 
 // for bus Reset
 // ALSO ASSUMPTION: when asking for byte i am assuming its talking about only one byte of parameter
