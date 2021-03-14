@@ -35,6 +35,13 @@ void i2c_eps_setHousekeepingPeriod(uint8_t period);
 
 void i2c_eps_setSafetyHazardEnvironment();
 
+// added but not utilized- unsure how to use enums in telemetry
+enum families
+{
+	BCR = 0, SOLAR_PANEL_SENS = 1, POWER_BUSES = 2, SWITCHABLE_POWER_BUSES = 3,
+	BATTERY_MODULE = 4, SYSTEM_DATA = 5
+}
+
 void i2c_eps_getTelemetryGroup(uint16_t families);
 
 void i2c_eps_fixedPowerBusReset(uint8_t busReset);

@@ -42,10 +42,6 @@ EPS:
 #define I2C_EPS_CMD_FIXED_POWER_BUS_RESET 0xFE
 #define I2C_EPS_CMD_MANUAL_RESET 0xFF
 
-// telemetry pg 14
-// check if thinking about correctly
-// for param[1] (where in I2C is parameter?)
-// also how do you read the byte and bit
 #define I2C_EPS_TELE_BCRS 0x00
 #define I2C_EPS_TELE_SOLAR_PANEL_SENSORS 0x01
 #define I2C_EPS_TELE_POWER_BUSES 0x02
