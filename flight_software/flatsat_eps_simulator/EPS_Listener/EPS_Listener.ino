@@ -15,10 +15,11 @@
       FDIR                              0x03            1             written
       ID                                0x04            1             written
       Get Telemetry Group               0x0B            n             written
+      Current Sensor Readout            0x0C            6             written, untested
 
     Recieve (no response)
       Set Watchdog Period               0x05            0             -
-      Set PDMs Initial State            0x06            0             -
+      Set PDMs Initial State            0x06            0             hard-coded
       Reset PDMs                        0x07            0             -
       Switch On/Off PDMs                0x08            0             written
       Set Housekeeping Period           0x09            0             -
@@ -44,7 +45,16 @@
 #define PDM_4 4
 #define PDM_5 5
 #define PDM_6 6
+#define CUR_1 7
+#define CUR_2 8
+#define CUR_3 9
+#define CUR_4 10
+#define CUR_5 11
+#define CUR_6 12
 #define LED_pin 13
+
+// Parameters
+#define SENSE_R 10  // Current Sensor R_sense in mOhm
 
 // i2c commands
 #define POWER_MODULE_STATUS             0x01
@@ -60,6 +70,7 @@
 #define GET_TELEMETRY_GROUP             0x0B
 #define FIXED_POWER_BUS_RESET           0xFE    //8-bit command may not work with Wire library?
 #define MANUAL_RESET                    0xFF    //8-bit command may not work with Wire library?
+#define CURRENT_SENSE                   0x0C
 
 // Telemetry registries
 #define BCRS                      0x00
@@ -77,10 +88,11 @@ byte param_rqst;
 int stat_LED;                   // status of LED: 1 = ON, 0 = OFF
 
 
-//
+// Setup
 int pdm_pins[] = {PDM_1, PDM_2, PDM_3, PDM_4, PDM_5, PDM_6}; // array of PDM pins for switching method
 int pdm_init_state[] = {0, 0, 0, 0, 0, 0}; // ??what is PDM initial state behavior of EPS?
 int pdm_state[] = {0, 0, 0, 0, 0, 0};
+int current_pins[] = {CUR_1, CUR_2, CUR_3, CUR_4, CUR_5, CUR_6};
 
 void setup() {
 
@@ -187,10 +199,11 @@ void dataRqst() {
   switch (registry_rqst) {
 
     case POWER_MODULE_STATUS:               power_module_status();                      break;
-    case BATTERY_MODULE_STATUS:                                                         break;
-    case FDIR:                                                                          break;
-    case ID:                                                                            break;
+    case BATTERY_MODULE_STATUS:             battery_module_status();                    break;
+    case FDIR:                              fdir();                                     break;
+    case ID:                                id();                                       break;
     case GET_TELEMETRY_GROUP:               telemetryGroup(param_rqst);                 break;
+    case CURRENT_SENSE:                     currentSense();                             break;
     default:                                Serial.println("command not recognized");   break;
     
   }
@@ -350,6 +363,27 @@ void telemetryGroup(byte param) {
     default:                          Serial.println("telem. param. not recognized");   break;
     
   }
+
+}
+
+
+//
+void currentSense() {
+
+  Serial.println("Sending Current Readings...");
+  
+  int bytes = 6;
+  float data = 0;
+
+  for (int i = 0; i < bytes; i++) {
+
+    data = analogRead(current_pins[i]) * (5.0 / 1023) / 100 / (SENSE_R);
+    Wire.write(round(data));
+    Serial.println("Byte sent... "); Serial.print(data);
+    
+  }
+
+  Serial.println("complete");
 
 }
 
