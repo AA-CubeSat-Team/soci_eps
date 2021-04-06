@@ -472,24 +472,24 @@ void i2c_eps_setSafetyHazardEnvironment()
 
 
 // twos compliment times 0.5 which is needed to convert the temperatures below
-static int twosComp(uint16_t x)
-{
-	// turn into 2s compliment
-	for (int i = 15; i >= 0; i--)
-	{
-		if (x[i] == '1')
-		{
-			x[i] = '0';
-		}
-		else
-		{
-			x[i] = '1';
-		}
-	}
-	x = x + 1;
+// static int twosComp(uint16_t x)
+// {
+// 	// turn into 2s compliment
+// 	for (int i = 15; i >= 0; i--)
+// 	{
+// 		if (x[i] == '1')
+// 		{
+// 			x[i] = '0';
+// 		}
+// 		else
+// 		{
+// 			x[i] = '1';
+// 		}
+// 	}
+// 	x = x + 1;
 
-	return x;
-}
+// 	return x;
+// }
 
 
 
@@ -593,13 +593,14 @@ char telemetry_bcrs(uint32_t * data)
 
 }
 
+// twos comp done here
 char telemetry_solarPanelSensors(uint32_t * data)
 {
-	int tm1 = twosComp(data[0] & BYTE16CAST) * 0.5;
-	int tm2 = twosComp((data[0] >> 16) & BYTE16CAST) * 0.5;
-	int tm3 = twosComp(data[1] & BYTE16CAST) * 0.5;
-	int tm4 = twosComp((data[1] >> 16) & BYTE16CAST) * 0.5;
-	int tm5 = twosComp(data[2] & BYTE16CAST) * 0.5;
+	int tm1 = (~(data[0] & BYTE16CAST) + 1) * 0.5;
+	int tm2 = (~((data[0] >> 16) & BYTE16CAST) + 1) * 0.5;
+	int tm3 = (~(data[1] & BYTE16CAST) + 1) * 0.5;
+	int tm4 = (~((data[1] >> 16) & BYTE16CAST) + 1) * 0.5;
+	int tm5 = (~(data[2] & BYTE16CAST) + 1) * 0.5;
 
 	PRINTF("M_SP Temperature X+ = %d C \n", tm1);
 	PRINTF("M_SP Temperature X- = %d C \n", tm2);
@@ -669,13 +670,14 @@ char telemetry_switchablePowerBuses(uint32_t * data)
 
 }
 
+// twos comp done here on 3,4,5
 char telemetry_batteryModule(uint32_t * data)
 {
 	int tm1 = (data[0] & BYTE16CAST) * 4.883;
 	int tm2 = ((data[0] >> 16) & BYTE16CAST) * 4.883;
-	int tm3 = twosComp(data[1] & BYTE16CAST) * 0.26;
-	int tm4 = twosComp((data[1] >> 16) & BYTE16CAST) * 0.1;
-	int tm5 = twosComp(data[2] & BYTE16CAST) * 0.125;
+	int tm3 = (~(data[1] & BYTE16CAST) + 1) * 0.26;
+	int tm4 = (~((data[1] >> 16) & BYTE16CAST) + 1) * 0.1;
+	int tm5 = (~(data[2] & BYTE16CAST) + 1) * 0.125;
 	int tm6 = ((data[2] >> 16) & BYTE16CAST) * 1.6;
 	int tm7 = (data[3] & BYTE16CAST);
 	int tm8 = ((data[3] >> 16) & BYTE16CAST) * 1.042;
