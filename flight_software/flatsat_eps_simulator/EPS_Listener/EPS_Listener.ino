@@ -39,18 +39,18 @@
 #define I2C_ADDRESS 0x51
 
 // Pinouts
-#define PDM_1 1
-#define PDM_2 2
-#define PDM_3 3
-#define PDM_4 4
-#define PDM_5 5
-#define PDM_6 6
-#define CUR_1 7
-#define CUR_2 8
-#define CUR_3 9
-#define CUR_4 10
-#define CUR_5 11
-#define CUR_6 12
+#define PDM_1 10
+#define PDM_2 9
+#define PDM_3 8
+#define PDM_4 7
+#define PDM_5 6
+#define PDM_6 5
+#define CUR_1 A7
+#define CUR_2 A6
+#define CUR_3 A3
+#define CUR_4 A2
+#define CUR_5 A1
+#define CUR_6 A0
 #define LED_pin 13
 
 // Parameters
@@ -90,8 +90,8 @@ int stat_LED;                   // status of LED: 1 = ON, 0 = OFF
 
 // Setup
 int pdm_pins[] = {PDM_1, PDM_2, PDM_3, PDM_4, PDM_5, PDM_6}; // array of PDM pins for switching method
-int pdm_init_state[] = {0, 0, 0, 0, 0, 0}; // ??what is PDM initial state behavior of EPS?
-int pdm_state[] = {0, 0, 0, 0, 0, 0};
+int pdm_init_state[] = {1, 1, 1, 1, 1, 1}; // ??what is PDM initial state behavior of EPS?
+int pdm_state[] = {1, 1, 1, 1, 1, 1};
 int current_pins[] = {CUR_1, CUR_2, CUR_3, CUR_4, CUR_5, CUR_6};
 
 void setup() {
@@ -134,6 +134,9 @@ void setup() {
 
   Serial.println("Initialized");
   printPDMState();
+
+  delay(3000);
+  currentSense();
 
 
 }
@@ -377,9 +380,9 @@ void currentSense() {
 
   for (int i = 0; i < bytes; i++) {
 
-    data = analogRead(current_pins[i]) * (5.0 / 1023) / 100 / (SENSE_R);
-    Wire.write(round(data));
-    Serial.println("Byte sent... "); Serial.print(data);
+    data = analogRead(current_pins[i])/* * (5.0 / 1023) / 100 / (SENSE_R) * 1000*/;
+    Wire.write((int) round(data));
+    Serial.print("Byte sent... "); Serial.println(data);
     
   }
 

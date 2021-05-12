@@ -12,7 +12,7 @@
 
 void setup() {
 
-  byte DATA = B11001100;
+  byte DATA = B11111100;
 
   Wire.begin();
   Serial.begin(9600);
