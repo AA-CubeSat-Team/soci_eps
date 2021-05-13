@@ -15,13 +15,14 @@
       FDIR                              0x03            1             written
       ID                                0x04            1             written
       Get Telemetry Group               0x0B            n             written
-      Current Sensor Readout            0x0C            6             written, untested
+      Current Sensor Readout            0x0C            6             written, tested **Odd behavior on pin A6, erratic values read when current low**
+                                                                      Current outputs to serial monitor and to i2C in Amps      
 
     Recieve (no response)
       Set Watchdog Period               0x05            0             -
       Set PDMs Initial State            0x06            0             hard-coded
       Reset PDMs                        0x07            0             -
-      Switch On/Off PDMs                0x08            0             written
+      Switch On/Off PDMs                0x08            0             written, tested
       Set Housekeeping Period           0x09            0             -
       Set Safety Hazard Environment     0x0A            0             -
       Fixed Power Bus Reset             0xFE            0             -
@@ -134,9 +135,6 @@ void setup() {
 
   Serial.println("Initialized");
   printPDMState();
-
-  delay(3000);
-  currentSense();
 
 
 }
@@ -380,7 +378,7 @@ void currentSense() {
 
   for (int i = 0; i < bytes; i++) {
 
-    data = analogRead(current_pins[i])/* * (5.0 / 1023) / 100 / (SENSE_R) * 1000*/;
+    data = analogRead(current_pins[i]) * (5.0 / 1023) / 100 / (SENSE_R) * 1000;
     Wire.write((int) round(data));
     Serial.print("Byte sent... "); Serial.println(data);
     
