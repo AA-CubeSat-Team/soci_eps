@@ -68,6 +68,46 @@ void setup() {
 
 void loop() {}
 
+  Serial.println("Enter Command (PDM # or 7 for current readout)...:");
+
+  while(Serial.available() = 0) { /* wait for input */ };
+
+  if(Serial.available() > 0)  {
+    int incomingData= Serial.read(); // can be -1 if read error
+    switch(incomingData) { 
+        case ‘1’:
+           Serial.println("Switching PDM 1..."); 
+           break;
+
+        case ‘2’:
+           Serial.println("Switching PDM 2..."); 
+           break;
+
+        case ‘3’:
+           Serial.println("Switching PDM 3..."); 
+           break;
+
+        case ‘4’:
+           Serial.println("Switching PDM 4..."); 
+           break;
+
+        case ‘5’:
+           Serial.println("Switching PDM 5..."); 
+           break;
+
+        case ‘6’:
+           Serial.println("Switching PDM 6..."); 
+           break;
+
+        case ‘7’:
+           // handle ‘3’
+           break;
+
+        default:
+           Serial.println("unknown command");
+           break;
+   }
+ }
 
 }
 
