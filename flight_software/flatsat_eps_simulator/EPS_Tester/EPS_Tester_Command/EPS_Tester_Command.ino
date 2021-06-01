@@ -7,11 +7,12 @@
 #define COMMAND 0x08
 
 //  Set desired data parameter here
-//#define DATA 11001100
+
 
 
 void setup() {
 
+  //  Set desired data parameter here
   byte DATA = B11111100;
 
   Wire.begin();
@@ -20,8 +21,11 @@ void setup() {
   Serial.println("Initialized");
 
   Wire.beginTransmission(EPS_ADDRESS);
+  Serial.println(EPS_ADDRESS);
   Wire.write(COMMAND);
+  Serial.println(COMMAND);
   Wire.write(DATA);
+  Serial.println(DATA);
   Wire.endTransmission();
 
   Serial.println("Command sent");
